@@ -1,11 +1,24 @@
 import Image from "next/image";
+import { Button } from "./ui/button";
+import Link from "next/link";
+import { lusitana } from "./ui/fonts";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start flex-wrap content-center">
-        <div className="christmas-tree h-128 w-64 bg-green-300"></div>
-      </main>
+    <div
+      className={`${lusitana.className} flex flex-col items-center m-auto gap-5`}
+    >
+      <h2 className="text-2xl">Get Started</h2>
+      <Link href="/login">
+        <Button>
+          <span>Log In</span>
+        </Button>
+      </Link>
+      <Link href="/signup">
+        <Button>
+          <span>Sign Up</span>
+        </Button>
+      </Link>
     </div>
   );
 }
