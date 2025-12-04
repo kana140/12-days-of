@@ -17,7 +17,8 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-sprite-animator": "^2.0.2",
-    "use-sound": "^5.0.0"
+    "use-sound": "^5.0.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
