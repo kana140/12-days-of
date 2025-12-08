@@ -16,7 +16,7 @@ export type Gift = {
   description: string;
   image: string;
   link: string;
-  day: string;
+  day: number;
   opened: boolean;
 };
 
@@ -51,3 +51,22 @@ export type FormState =
       message?: string;
     }
   | undefined;
+
+export const Images = ["cookies", "picture"];
+
+export type CalendarForm = {
+  id: string;
+  receiver_name: string;
+  receiver_email: string;
+  start_date: string;
+};
+
+export type GiftField = {
+  id: string;
+  name: string;
+  dashboard_id: string;
+  description: string;
+  image: string;
+  link: string;
+  day: number;
+};

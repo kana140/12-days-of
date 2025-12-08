@@ -1,17 +1,27 @@
 "use client";
 
-// import { CustomerField } from "@/app/lib/definitions";
-// import Link from "next/link"
 import GiftsTable from "@/app/ui/gifts-table";
 import { Button } from "@/app/ui/button";
-import { createCalendar, State } from "@/app/lib/actions";
+import { updateCalendar, State } from "@/app/lib/actions";
 import { useActionState } from "react";
 import { Images } from "@/app/lib/definitions";
 import { lusitana } from "./fonts";
+import { CalendarForm, GiftField } from "@/app/lib/definitions";
+import Link from "next/link";
 
-export default function Form() {
+export default function Form({
+  calendar,
+  gifts,
+}: {
+  calendar: CalendarForm;
+  gifts: GiftField[];
+}) {
   const initialState: State = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createCalendar, initialState);
+  const updateCalendarWithId = updateCalendar.bind(null, calendar.id);
+  const [state, formAction] = useActionState(
+    updateCalendarWithId,
+    initialState
+  );
   console.log(state);
   return (
     <form action={formAction}>
@@ -20,7 +30,7 @@ export default function Form() {
         aria-describedby="all-fields-missing-error"
       >
         <h1 className={`${lusitana.className} mb-3 text-2xl text-center`}>
-          Create Calendar
+          Edit Calendar
         </h1>
         {/* Receiver's Name */}
         <div className="mb-4">
@@ -36,6 +46,7 @@ export default function Form() {
               type="text"
               id="receivers-name"
               name="receiversName"
+              defaultValue={calendar.receiver_name}
               placeholder="Enter name"
               required
             ></input>
@@ -55,6 +66,7 @@ export default function Form() {
               type="text"
               id="receivers-email"
               name="receiversEmail"
+              defaultValue={calendar.receiver_email}
               placeholder="Enter email"
               className="peer block w-50% rounded-md border border-gray-100 py-1 pl-5 text-sm outline-2 placeholder:text-gray-500"
             ></input>
@@ -75,6 +87,11 @@ export default function Form() {
               type="date"
               id="start-date"
               name="startDate"
+              defaultValue={
+                calendar.start_date
+                  ? new Date(calendar.start_date).toISOString().split("T")[0]
+                  : ""
+              }
             ></input>
           </div>
         </div>
@@ -87,16 +104,10 @@ export default function Form() {
           >
             Create a gift for each day
           </label>
-          <GiftsTable gifts={[]} />
+          <GiftsTable gifts={gifts} />
         </div>
         <div className="mt-6 flex justify-end gap-4">
-          {/* <Link
-          href="/dashboard"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Create
-        </Link> */}
-          <Button type="submit">Create Calendar</Button>
+          <Button type="submit">Update Calendar</Button>
         </div>
       </div>
     </form>

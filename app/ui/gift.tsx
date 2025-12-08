@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
-import clsx from "clsx";
+// import Link from "next/link";
+// import clsx from "clsx";
 import { useState } from "react";
 import GiftModal from "@/app/ui/gift-modal";
 import { Gift } from "../lib/definitions";
@@ -17,7 +17,7 @@ export default function GiftBox(gift: GiftCardProps) {
     setSelectedGift(gift);
     setIsModalOpen(true);
   }
-  const isActive = true;
+  //   const isActive = true;
   return (
     <div>
       <button

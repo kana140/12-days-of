@@ -1,12 +1,35 @@
 "use client";
 import { useState } from "react";
+import { Images } from "../lib/definitions";
+import { Button } from "./button";
+import { useEffect } from "react";
 
 type GiftRow = {
   id: string;
+  name?: string;
+  description?: string;
+  link?: string;
+  image?: string;
+  day?: number;
 };
 
-export default function GiftsTable() {
+export default function GiftsTable({ gifts }: { gifts: GiftRow[] }) {
   const [rows, setRows] = useState<GiftRow[]>([{ id: crypto.randomUUID() }]);
+
+  useEffect(() => {
+    if (gifts?.length > 0) {
+      setRows(
+        gifts.map((gift, index) => ({
+          id: gift.id ?? crypto.randomUUID(),
+          name: gift.name ?? "",
+          description: gift.description ?? "",
+          link: gift.link ?? "",
+          image: gift.link ?? "",
+          day: gift.day ?? index + 1,
+        }))
+      );
+    }
+  }, [gifts]);
 
   const addRow = () => {
     setRows((prev) => [...prev, { id: crypto.randomUUID() }]);
@@ -17,14 +40,14 @@ export default function GiftsTable() {
 
   return (
     <div className="flex flex-col items-center">
-      <table className="bg-blue-100 w-full h-10 ">
+      <table className="bg-blue-50 w-full h-10 w-50%">
         <thead>
           <tr>
             <th>Day</th>
             <th>Title</th>
             <th>Description</th>
-            {/* <th>Image</th> */}
             <th>Link</th>
+            <th>Image</th>
             <th></th>
           </tr>
         </thead>
@@ -34,7 +57,7 @@ export default function GiftsTable() {
             return (
               <tr key={row.id} className="border-t">
                 {/* Day */}
-                <td className="border px-2 py-1">
+                <td className="border border-gray-400 px-2 py-1">
                   <span className="inline-block w-8 text-center font-medium">
                     {day}
                   </span>
@@ -46,39 +69,61 @@ export default function GiftsTable() {
                 </td>
 
                 {/* Title */}
-                <td className="border px-2 py-1">
+                <td className="border border-gray-400 px-2 py-1">
                   <input
                     type="text"
                     name={`gifts[${day}][name]`}
-                    className="w-full border px-1 py-0.5"
+                    className="w-full"
+                    defaultValue={row.name}
                     required
                   />
                 </td>
 
                 {/* Description */}
-                <td className="border px-2 py-1">
+                <td className="border border-gray-400 px-2 py-1">
                   <input
                     type="text"
                     name={`gifts[${day}][description]`}
-                    className="w-full border px-1 py-0.5"
+                    className="w-full"
+                    defaultValue={row.description}
                     required
                   />
                 </td>
 
-                {/* Image */}
-
                 {/* Link */}
-                <td className="border px-2 py-1">
+                <td className="border border-gray-400 px-2 py-1">
                   <input
                     type="text"
                     name={`gifts[${day}][link]`}
-                    className="w-full border px-1 py-0.5"
+                    className="w-full"
+                    defaultValue={row.link}
                     required
                   />
                 </td>
 
+                {/* Images */}
+                <td className="border border-gray-400 px-2 py-1">
+                  <div className="relative">
+                    <select
+                      id="customer"
+                      name="customerId"
+                      className="peer block w-full cursor-pointer py-2 px-10"
+                      defaultValue=""
+                      aria-describedby="customer-error"
+                    >
+                      {Images.map((image, index) => {
+                        return (
+                          <option key={index} value={image}>
+                            {/* <img src={`/${image}.png`}></img> */}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </td>
+
                 {/* Remove button */}
-                <td className="border px-2 py-1 text-center">
+                <td className="border border-gray-400 px-2 py-1 text-center">
                   <button
                     type="button"
                     onClick={() => removeRow(row.id)}
@@ -104,15 +149,14 @@ export default function GiftsTable() {
         </tbody>
       </table>
       {rows.length < 12 ? (
-        <div className="bg-blue-500 w-25 h-10 text-center">
-          <div
-            onClick={() => {
-              addRow();
-            }}
-          >
-            Add Gift
-          </div>
-        </div>
+        <button
+          className="border border-gray-500 rounded-md bg-blue-50 m-5 py-2 px-5 cursor-pointer hover:bg-blue-200"
+          onClick={() => {
+            addRow();
+          }}
+        >
+          Add Gift
+        </button>
       ) : (
         <></>
       )}

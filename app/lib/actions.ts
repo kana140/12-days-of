@@ -33,7 +33,7 @@ export type State = {
 
 type GiftInput = {
   day: number;
-  title: string;
+  name: string;
   link: string;
   description: string;
   image: string;
@@ -44,7 +44,7 @@ function parseGifts(formData: FormData) {
 
   for (const [key, value] of formData.entries()) {
     const match = key.match(
-      /^gifts\[(\d+)\]\[(day|title|link|description|image)\]$/
+      /^gifts\[(\d+)\]\[(day|name|link|description|image)\]$/
     );
     if (!match) continue;
 
@@ -57,8 +57,8 @@ function parseGifts(formData: FormData) {
 
     if (field === "day") {
       giftsByDay[dayKey].day = Number(stringValue);
-    } else if (field === "title") {
-      giftsByDay[dayKey].title = stringValue;
+    } else if (field === "name") {
+      giftsByDay[dayKey].name = stringValue;
     } else if (field === "link") {
       giftsByDay[dayKey].link = stringValue;
     } else if (field === "description") {
@@ -71,7 +71,7 @@ function parseGifts(formData: FormData) {
   return Object.entries(giftsByDay)
     .map(([dayKey, data]) => ({
       day: data.day ?? Number(dayKey),
-      title: data.title ?? "",
+      title: data.name ?? "",
       link: data.link ?? "",
       description: data.description ?? "",
       image: data.image ?? "",
@@ -135,6 +135,77 @@ export async function createCalendar(preState: State, formData: FormData) {
     console.error(error);
     return {
       message: "Database Error: Failed to Create Calendar.",
+    };
+  }
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
+}
+
+const UpdateCalendar = FormSchema.omit({ id: true });
+
+export async function updateCalendar(
+  id: string,
+  prevState: State,
+  formData: FormData
+) {
+  const session = await auth();
+
+  if (!session?.user) {
+    throw new Error("Not logged in.");
+  }
+
+  const userEmail = session.user.email;
+  console.log(session);
+  if (!userEmail) {
+    throw new Error("Not authenticated");
+  }
+
+  const user = await sql`SELECT id FROM users WHERE email = ${userEmail}`;
+
+  if (!user) {
+    throw new Error("User not found in DB");
+  }
+
+  const userId: number = user[0].id;
+
+  const validatedFields = UpdateCalendar.safeParse({
+    receiversName: formData.get("receiversName"),
+    receiversEmail: formData.get("receiversEmail"),
+    startDate: formData.get("startDate"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Update Calendar.",
+    };
+  }
+
+  const { receiversName, receiversEmail, startDate } = validatedFields.data;
+  const gifts = parseGifts(formData);
+
+  try {
+    await sql`
+    UPDATE calendars
+    SET receiver_name = ${receiversName}, receiver_email = ${receiversEmail}, start_date = ${startDate}, number_of_days = ${gifts.length}
+    WHERE id = ${id};
+    `;
+
+    await sql`DELETE FROM gifts WHERE calendar_id = ${id};`;
+
+    console.log("deleted rows");
+
+    for (const gift of gifts) {
+      await sql`
+      INSERT INTO gifts (calendar_id, day, name, link, description, image)
+      VALUES (${id}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${gift.image});
+    `;
+    }
+  } catch (error) {
+    console.error(error);
+    return {
+      message: "Database Error: Failed to Update Calendar.",
     };
   }
 

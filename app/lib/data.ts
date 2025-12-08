@@ -1,5 +1,5 @@
 import postgres from "postgres";
-import { Calendar, Gift, User } from "./definitions";
+import { Calendar, Gift } from "./definitions";
 import { auth } from "@/auth";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
@@ -70,7 +70,7 @@ export async function getCalendarForUser() {
     const session = await auth();
 
     if (!session?.user?.email) {
-      return { calendar: null, gifts: [] as any[] };
+      return { calendar: null, gifts: [] as Gift[] };
     }
 
     const userEmail = session.user.email;
@@ -83,19 +83,19 @@ export async function getCalendarForUser() {
     const user = users[0];
 
     if (!user) {
-      return { calendar: null, gifts: [] as any[] };
+      return { calendar: null, gifts: [] as Gift[] };
     }
     console.log(user);
     const userId: number = user.id;
 
     // we got the user id now get the calendar
 
-    let calendarRows = await sql<
+    const calendarRows = await sql<
       Calendar[]
     >`SELECT * FROM calendars WHERE user_id = ${userId}`;
 
     if (calendarRows.length === 0) {
-      return { calendar: null, gifts: [] as any[] };
+      return { calendar: null, gifts: [] as Gift[] };
     }
 
     console.log(calendarRows);
@@ -107,9 +107,7 @@ export async function getCalendarForUser() {
       Gift[]
     >`SELECT * FROM gifts WHERE calendar_id = ${calendarId}`;
 
-    const calendar = calendarRows.map((calendar) => ({
-      ...calendar,
-    }));
+    const calendar: Calendar = calendarRows[0];
 
     const gifts = giftsRows.map((gift) => ({
       ...gift,
@@ -118,6 +116,6 @@ export async function getCalendarForUser() {
     return { calendar, gifts };
   } catch (error) {
     console.log(error);
-    return { calendar: null, gifts: [] as any[] };
+    return { calendar: null, gifts: [] as Gift[] };
   }
 }

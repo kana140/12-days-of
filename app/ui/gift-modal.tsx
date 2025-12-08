@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Gift } from "../lib/definitions";
+import { SpriteAnimator } from "react-sprite-animator";
+import giftopening from "@/public/present-sprite-opening.png";
 // import useSound from "use-sound";
 // import pop from "@/public/sounds/pop.mp3";
 
@@ -53,7 +55,16 @@ export default function GiftModal({
         {phase === "animating" && (
           <div className="flex flex-col items-center justify-center py-10">
             {/* Gift box animation placeholder – drop your sprite here */}
-            <div className="mb-4 h-24 w-24 animate-bounce rounded-xl bg-pink-200" />
+            <SpriteAnimator
+              sprite={giftopening.src}
+              width={515}
+              height={540}
+              fps={4}
+              direction="horizontal"
+              frameCount={3}
+              scale={3}
+            />
+            {/* <div className="mb-4 h-24 w-24 animate-bounce rounded-xl bg-pink-200" /> */}
             <p className="text-sm text-gray-600">Opening your gift…</p>
             <button
               className="mt-4 text-xs text-gray-500 underline"

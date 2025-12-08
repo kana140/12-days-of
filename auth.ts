@@ -27,10 +27,6 @@ async function getUser(email: string): Promise<User | undefined> {
 
 async function createUser(name: string, email: string, password: string) {
   try {
-    console.log("CREATE USER");
-    console.log(email);
-    console.log(name);
-    console.log(password);
     await sql`INSERT INTO users (email, name, password)
         VALUES (${email}, ${name}, ${password})`;
   } catch (error) {
