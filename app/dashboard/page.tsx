@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { getCalendarsForUser } from "../lib/data";
 import { notFound } from "next/navigation";
