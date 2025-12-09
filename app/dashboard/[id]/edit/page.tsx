@@ -1,16 +1,15 @@
 import Form from "@/app/ui/edit-form";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { getCalendarForUser } from "@/app/lib/data";
+import { getCalendarForOwner } from "@/app/lib/data";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export const metadata: Metadata = { title: "Create Invoice" };
+export const metadata: Metadata = { title: "Edit Calendar" };
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
-  //   const customers = await fetchCustomers();
   const params = await props.params;
   const id = params.id;
-  const { calendar, gifts } = await getCalendarForUser();
+  const { calendar, gifts } = await getCalendarForOwner(id);
   if (!calendar) {
     notFound();
   }
@@ -21,7 +20,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           { label: "Calendar", href: "/dashboard" },
           {
             label: "Edit Calendar",
-            href: "/dashboard/edit",
+            href: `/dashboard/${calendar.id}/edit`,
             active: true,
           },
         ]}

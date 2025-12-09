@@ -8,6 +8,7 @@ import postgres from "postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { put } from "@vercel/blob";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -25,8 +26,6 @@ export type State = {
     receiversName?: string[];
     receiversEmail?: string[];
     startDate?: string[];
-    // numberOfDays?: string[];
-    // gifts?: object[];
   };
   message?: string | null;
 };
@@ -36,7 +35,8 @@ type GiftInput = {
   name: string;
   link: string;
   description: string;
-  image: string;
+  image: File | null;
+  existingImageUrl?: string;
 };
 
 function parseGifts(formData: FormData) {
@@ -44,7 +44,7 @@ function parseGifts(formData: FormData) {
 
   for (const [key, value] of formData.entries()) {
     const match = key.match(
-      /^gifts\[(\d+)\]\[(day|name|link|description|image)\]$/
+      /^gifts\[(\d+)\]\[(day|name|link|description|image|existingImageUrl)\]$/
     );
     if (!match) continue;
 
@@ -64,7 +64,9 @@ function parseGifts(formData: FormData) {
     } else if (field === "description") {
       giftsByDay[dayKey].description = stringValue;
     } else if (field === "image") {
-      giftsByDay[dayKey].image = stringValue;
+      giftsByDay[dayKey].image = value instanceof File ? value : null;
+    } else if (field === "existingImageUrl") {
+      giftsByDay[dayKey].existingImageUrl = stringValue;
     }
   }
 
@@ -74,7 +76,8 @@ function parseGifts(formData: FormData) {
       title: data.name ?? "",
       link: data.link ?? "",
       description: data.description ?? "",
-      image: data.image ?? "",
+      image: data.image ?? null,
+      existingImageUrl: data.existingImageUrl ?? "",
     }))
     .sort((a, b) => a.day - b.day);
 }
@@ -126,9 +129,15 @@ export async function createCalendar(preState: State, formData: FormData) {
     const calendarId: number = calendarResult[0].id;
 
     for (const gift of gifts) {
+      const file = gift.image;
+      let imageUrl = "";
+      if (file && file.size > 0) {
+        imageUrl = await uploadGiftImage(calendarId.toString(), gift.day, file);
+      }
+
       await sql`
       INSERT INTO gifts (calendar_id, day, name, link, description, image)
-      VALUES (${calendarId}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${gift.image});
+      VALUES (${calendarId}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${imageUrl});
     `;
     }
   } catch (error) {
@@ -167,7 +176,7 @@ export async function updateCalendar(
     throw new Error("User not found in DB");
   }
 
-  const userId: number = user[0].id;
+  //   const userId: number = user[0].id;
 
   const validatedFields = UpdateCalendar.safeParse({
     receiversName: formData.get("receiversName"),
@@ -197,9 +206,15 @@ export async function updateCalendar(
     console.log("deleted rows");
 
     for (const gift of gifts) {
+      const file = gift.image;
+      let imageUrl = gift.existingImageUrl || "";
+      if (file && file.size > 0) {
+        imageUrl = await uploadGiftImage(id, gift.day, file);
+      }
+
       await sql`
       INSERT INTO gifts (calendar_id, day, name, link, description, image)
-      VALUES (${id}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${gift.image});
+      VALUES (${id}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${imageUrl});
     `;
     }
   } catch (error) {
@@ -255,5 +270,22 @@ export async function signup(state: FormState, formData: FormData) {
     await signUp(name, email, hashedPassword);
   } catch (error) {
     console.log(error);
+    throw error;
   }
+
+  revalidatePath("/login");
+  redirect("/login");
+}
+
+async function uploadGiftImage(calendarId: string, day: number, file: File) {
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  const { url } = await put(
+    `calendar/${calendarId}/day-${day}-${file.name}`,
+    buffer,
+    { access: "public" }
+  );
+
+  return url;
 }

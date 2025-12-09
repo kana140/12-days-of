@@ -9,16 +9,16 @@ export type Calendar = {
   number_of_days: string;
 };
 
-export type Gift = {
-  id: string;
-  name: string;
-  dashboard_id: string;
-  description: string;
-  image: string;
-  link: string;
-  day: number;
-  opened: boolean;
-};
+// export type Gift = {
+//   id: string;
+//   name: string;
+//   calendar_id: string;
+//   description: string;
+//   image: string;
+//   link: string;
+//   day: number;
+//   opened: boolean;
+// };
 
 export type User = {
   id: string;
@@ -64,9 +64,27 @@ export type CalendarForm = {
 export type GiftField = {
   id: string;
   name: string;
-  dashboard_id: string;
+  calendar_id: string;
   description: string;
-  image: string;
-  link: string;
+  image: string | null;
+  link: string | null;
   day: number;
+  opened: boolean;
 };
+
+export type GiftSummary = {
+  id: string;
+  calendar_id: string;
+  day: number;
+  opened: boolean;
+  disabled: boolean;
+};
+
+export type FullGift = GiftSummary & {
+  name: string;
+  description: string;
+  link: string | null;
+  image: string | null;
+};
+
+export type Gift = GiftSummary | FullGift;

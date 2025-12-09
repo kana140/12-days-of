@@ -1,12 +1,8 @@
 "use client";
-
-// import { CustomerField } from "@/app/lib/definitions";
-// import Link from "next/link"
 import GiftsTable from "@/app/ui/gifts-table";
 import { Button } from "@/app/ui/button";
 import { createCalendar, State } from "@/app/lib/actions";
 import { useActionState } from "react";
-import { Images } from "@/app/lib/definitions";
 import { lusitana } from "./fonts";
 
 export default function Form() {
@@ -48,7 +44,7 @@ export default function Form() {
             htmlFor="receivers-email"
             className="mb-2 block text-sm font-medium text-gray-900"
           >
-            What's their email
+            Whats their email
           </label>
           <div className="relative">
             <input

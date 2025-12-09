@@ -3,29 +3,71 @@
 // import clsx from "clsx";
 import { useState } from "react";
 import GiftModal from "@/app/ui/gift-modal";
-import { Gift } from "../lib/definitions";
+import { Gift, FullGift } from "../lib/definitions";
+import { ToastContainer, toast } from "react-toastify";
 
 type GiftCardProps = {
   gift: Gift;
 };
 
-export default function GiftBox(gift: GiftCardProps) {
-  const [selectedGift, setSelectedGift] = useState<Gift | null>(null);
+export default function GiftBox({ gift }: GiftCardProps) {
+  const [selectedGift, setSelectedGift] = useState<FullGift | null>(
+    isFullGift(gift) ? gift : null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  function handleSelectGift(gift: Gift) {
-    setSelectedGift(gift);
-    setIsModalOpen(true);
+  const [loading, setLoading] = useState(false);
+  //   const notify = () => toast("yippii")
+  function isFullGift(gift: Gift): gift is FullGift {
+    return "name" in gift && "description" in gift;
   }
-  //   const isActive = true;
+
+  async function handleSelectGift() {
+    console.log("is fuill gift", selectedGift);
+    console.log(isFullGift(gift));
+    if (selectedGift) {
+      setIsModalOpen(true);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/gifts/${gift.calendar_id}/${gift.day}`, {
+        method: "GET",
+      });
+
+      if (res.status === 403) {
+        toast(`You can only open this gift on day ${gift.day}`);
+        return;
+      }
+
+      if (!res.ok) {
+        toast("Couldn’t load this gift, sorry!");
+        return;
+      }
+
+      const fullGift: FullGift = await res.json();
+      setSelectedGift(fullGift);
+      setIsModalOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div>
       <button
-        className="cursor-pointer"
-        onClick={() => handleSelectGift(gift.gift)}
+        className={
+          gift.disabled
+            ? "opacity-40 grayscale cursor-not-allowed"
+            : "cursor-pointer"
+        }
+        onClick={handleSelectGift}
+        disabled={loading || gift.disabled}
       >
-        <img className="size-24" src="/present1.png"></img>
+        <img className="size-24" src="/present1.png" alt="present"></img>
       </button>
+      <ToastContainer />
+
       <GiftModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

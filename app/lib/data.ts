@@ -1,6 +1,7 @@
 import postgres from "postgres";
-import { Calendar, Gift } from "./definitions";
+import { Calendar, FullGift, GiftSummary } from "./definitions";
 import { auth } from "@/auth";
+import { getDateDiff } from "./util";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -9,25 +10,53 @@ export async function getCalendarById(calendarId: string) {
     const calendarDataPromise = sql`SELECT receiver_name, start_date, number_of_days FROM calendars WHERE id = ${calendarId}`;
     const giftCountPromise = sql`SELECT COUNT(*) FROM gifts WHERE calendar_id = ${calendarId}`;
     const allGiftsPromise = sql<
-      Gift[]
-    >`SELECT day, opened FROM gifts WHERE calendar_id = ${calendarId} ORDER BY day`;
+      GiftSummary[]
+    >`SELECT calendar_id, day, opened FROM gifts WHERE calendar_id = ${calendarId} ORDER BY day`;
 
     const data = await Promise.all([
       giftCountPromise,
       calendarDataPromise,
       allGiftsPromise,
     ]);
-    console.log(data);
 
     const numberOfGifts = Number(data[0][0].count ?? "0");
     const calendar = data[1][0];
-    console.log(calendar);
-    const gifts = data[2];
+
+    const giftData = data[2];
+    const todaysDate = new Date();
+    const calendarStartDate = new Date(calendar.start_date);
+    let calendarMessage = "";
+
+    todaysDate.setHours(0, 0, 0, 0);
+    calendarStartDate.setHours(0, 0, 0, 0);
+    const dateDiff = getDateDiff(new Date(calendar.start_date));
+
+    const gifts: GiftSummary[] = giftData.map((gift) => {
+      const day = gift.day;
+      const unlockDate = new Date(calendarStartDate);
+      unlockDate.setDate(calendarStartDate.getDate() + (day - 1));
+      return {
+        ...gift,
+        disabled: unlockDate > todaysDate,
+      };
+    });
+
+    if (calendar.start_date <= todaysDate) {
+      console.log("calendar started");
+      calendarMessage = `Day ${Math.abs(dateDiff)}`;
+    } else if (todaysDate >= calendar.start_date + calendar.number_of_days) {
+      console.log(`calendar finished!`);
+      calendarMessage = "Calendar finished";
+    } else if (todaysDate < calendar.start_date) {
+      console.log(`calendar starts in ${dateDiff} days`);
+      calendarMessage = `Calendar starts in ${dateDiff} days`;
+    }
 
     return {
       numberOfGifts,
       calendar,
       gifts,
+      calendarMessage,
     };
   } catch (error) {
     console.error("Database Error:", error);
@@ -37,12 +66,14 @@ export async function getCalendarById(calendarId: string) {
 
 export async function getGiftsForCalendar() {}
 
-export async function getGiftForDay(
-  calendarId: string,
-  startDate: string,
-  day: number
-) {
+export async function getGiftForDay(calendarId: string, day: number) {
   try {
+    const calendarRows = await sql<
+      Calendar[]
+    >`SELECT start_date FROM calendars WHERE calendar_id = ${calendarId}`;
+
+    const startDate = calendarRows[0].start_date;
+
     const currentDay =
       Math.floor(
         (new Date().getTime() - new Date(startDate).getTime()) /
@@ -51,10 +82,17 @@ export async function getGiftForDay(
     if (day > currentDay) {
       throw new Error("Nice try");
     }
-    const gift = await sql<Gift[]>`
-    SELECT * FROM gifts where dashboard_id=${calendarId} AND day=${day};`;
+    const giftRows = await sql<FullGift[]>`
+    SELECT 1 FROM gifts where dashboard_id=${calendarId} AND day=${day} LIMIT 1;`;
 
-    console.log(gift);
+    const gift: FullGift = giftRows[0];
+
+    try {
+      await sql`UPDATE gifts SET opened = 1 where id = ${gift.id}`;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to set the gift to opened");
+    }
 
     return {
       gift,
@@ -65,12 +103,12 @@ export async function getGiftForDay(
   }
 }
 
-export async function getCalendarForUser() {
+export async function getCalendarsForUser() {
   try {
     const session = await auth();
 
     if (!session?.user?.email) {
-      return { calendar: null, gifts: [] as Gift[] };
+      return { calendars: [] as Calendar[] };
     }
 
     const userEmail = session.user.email;
@@ -83,19 +121,36 @@ export async function getCalendarForUser() {
     const user = users[0];
 
     if (!user) {
-      return { calendar: null, gifts: [] as Gift[] };
+      return { calendars: [] as Calendar[] };
     }
-    console.log(user);
     const userId: number = user.id;
-
-    // we got the user id now get the calendar
 
     const calendarRows = await sql<
       Calendar[]
     >`SELECT * FROM calendars WHERE user_id = ${userId}`;
 
     if (calendarRows.length === 0) {
-      return { calendar: null, gifts: [] as Gift[] };
+      return { calendars: [] as Calendar[] };
+    }
+
+    const calendars = calendarRows.map((calendar) => ({
+      ...calendar,
+    }));
+    return { calendars };
+  } catch (error) {
+    console.error("Unable to retrieve calendars for users", error);
+    return { calendars: [] as Calendar[] };
+  }
+}
+
+export async function getCalendarForOwner(id: string) {
+  try {
+    const calendarRows = await sql<
+      Calendar[]
+    >`SELECT * FROM calendars WHERE id = ${id}`;
+
+    if (calendarRows.length === 0) {
+      return { calendar: null, gifts: [] as FullGift[] };
     }
 
     console.log(calendarRows);
@@ -104,18 +159,20 @@ export async function getCalendarForUser() {
     // now get gifts
 
     const giftsRows = await sql<
-      Gift[]
+      FullGift[]
     >`SELECT * FROM gifts WHERE calendar_id = ${calendarId}`;
 
     const calendar: Calendar = calendarRows[0];
+    console.log(calendar);
 
     const gifts = giftsRows.map((gift) => ({
       ...gift,
+      disabled: false,
     }));
 
     return { calendar, gifts };
   } catch (error) {
     console.log(error);
-    return { calendar: null, gifts: [] as Gift[] };
+    return { calendar: null, gifts: [] as FullGift[] };
   }
 }

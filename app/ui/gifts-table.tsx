@@ -1,8 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Images } from "../lib/definitions";
-import { Button } from "./button";
 import { useEffect } from "react";
+import { GiftField } from "../lib/definitions";
 
 type GiftRow = {
   id: string;
@@ -11,9 +10,10 @@ type GiftRow = {
   link?: string;
   image?: string;
   day?: number;
+  opened?: boolean;
 };
 
-export default function GiftsTable({ gifts }: { gifts: GiftRow[] }) {
+export default function GiftsTable({ gifts }: { gifts: GiftField[] }) {
   const [rows, setRows] = useState<GiftRow[]>([{ id: crypto.randomUUID() }]);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function GiftsTable({ gifts }: { gifts: GiftRow[] }) {
           name: gift.name ?? "",
           description: gift.description ?? "",
           link: gift.link ?? "",
-          image: gift.link ?? "",
+          image: gift.image ?? "",
           day: gift.day ?? index + 1,
         }))
       );
@@ -104,21 +104,22 @@ export default function GiftsTable({ gifts }: { gifts: GiftRow[] }) {
                 {/* Images */}
                 <td className="border border-gray-400 px-2 py-1">
                   <div className="relative">
-                    <select
-                      id="customer"
-                      name="customerId"
-                      className="peer block w-full cursor-pointer py-2 px-10"
-                      defaultValue=""
-                      aria-describedby="customer-error"
-                    >
-                      {Images.map((image, index) => {
-                        return (
-                          <option key={index} value={image}>
-                            {/* <img src={`/${image}.png`}></img> */}
-                          </option>
-                        );
-                      })}
-                    </select>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="image"
+                      name={`gifts[${day}][image]`}
+                    />
+                    {/* {row.image && (
+                      <img src={row.image} alt={row.name} className="w-full" />
+                    )} */}
+                    {row.image && (
+                      <input
+                        type="hidden"
+                        name={`gifts[${day}][existingImageUrl]`}
+                        value={row.image}
+                      />
+                    )}
                   </div>
                 </td>
 

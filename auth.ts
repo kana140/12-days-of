@@ -5,13 +5,6 @@ import Credentials from "next-auth/providers/credentials";
 import type { User } from "@/app/lib/definitions";
 import bcrypt from "bcrypt";
 import postgres from "postgres";
-import type {
-  GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse,
-} from "next";
-import type NextAuthOptions from "next-auth";
-import getServerSession from "next-auth";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 

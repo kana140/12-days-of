@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Gift } from "../lib/definitions";
+import { FullGift } from "../lib/definitions";
 import { SpriteAnimator } from "react-sprite-animator";
 import giftopening from "@/public/present-sprite-opening.png";
 // import useSound from "use-sound";
@@ -20,7 +20,7 @@ export default function GiftModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  gift: Gift | null;
+  gift: FullGift | null;
 }) {
   const [phase, setPhase] = useState<"animating" | "revealed">("animating");
 
