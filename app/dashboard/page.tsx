@@ -16,18 +16,35 @@ export default async function Page() {
         <h2> No Calendars yet. Get Started</h2>
       ) : (
         <div>
-          {calendars.map((calendar, index) => (
-            <Link key={index} href={`./dashboard/${calendar.id}`}>
-              <div key={index} className="bg-sky-100 h-50 w-full">
-                {calendar.receiver_name}
+          {calendars.map((calendar, index) => {
+            let day = index + 1;
+            const startDate = new Date(
+              calendar.start_date
+            ).toLocaleDateString();
+            return (
+              <div className="flex flex-col">
+                <Link
+                  key={index}
+                  className="cursor-pointer"
+                  href={`./dashboard/${calendar.id}`}
+                >
+                  <div className="bg-sky-100 hover:bg-sky-200 p-5 m-2 w-full flex flex-col text-center border-2 border-gray-300">
+                    <h2>Calendar {day}</h2>
+
+                    <h4>Start Date: {startDate}</h4>
+                  </div>
+                </Link>
                 <EditCalendar id={calendar.id} />
               </div>
-            </Link>
-          ))}
+            );
+          })}
         </div>
       )}
-      <Link href="./dashboard/create" className="bg-sky-200 p-5 rounded-2xl">
-        <span> Create calendar </span>
+      <Link
+        href="./dashboard/create"
+        className="bg-sky-200 p-5 m-5 rounded-2xl absolute bottom-0"
+      >
+        <span> Create Calendar </span>
       </Link>
     </div>
   );

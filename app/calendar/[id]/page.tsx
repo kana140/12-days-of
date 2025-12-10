@@ -8,7 +8,8 @@ export const metadata: Metadata = { title: "Calendar" };
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  const { calendar, gifts, calendarMessage } = await getCalendarById(id);
+  const { calendar, gifts, calendarMessage, currentDay } =
+    await getCalendarById(id);
 
   return (
     <div className="py-10 px-16">
@@ -18,7 +19,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       <ChristmasTree />
       <div className="flex flex-wrap justify-center">
         {gifts.map((gift, index) => (
-          <GiftBox key={index} gift={gift} />
+          <GiftBox
+            key={index}
+            gift={gift}
+            currentDay={index + 1 === currentDay}
+          />
         ))}
       </div>
       <h2 className="pt-5 pb-5 m-auto text-center text-2xl">

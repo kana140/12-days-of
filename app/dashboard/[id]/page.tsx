@@ -14,16 +14,20 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   if (!calendar) {
     notFound();
   }
-  const daysTillStart = getDateDiff(new Date(calendar.start_date));
+  const daysTillStart = getDateDiff(new Date(calendar.start_date)) + 1;
 
   return (
     <div className="pt-10 px-16 text-center">
-      <h1 className="pb-1">Calendar starts in {daysTillStart} days!</h1>
-      <h3 className="pb-10">Better finish it soon...</h3>
+      {daysTillStart > 0 ? (
+        <h1> Day {daysTillStart} </h1>
+      ) : (
+        <h3 className="pb-10">Better finish it soon...</h3>
+      )}
+
       <ChristmasTree />
       <div className="flex flex-wrap justify-center">
         {gifts.map((gift, index) => (
-          <GiftBox key={index} gift={gift} />
+          <GiftBox key={index} gift={gift} currentDay={false} />
         ))}
       </div>
       <div className="flex justify-center mt-8 flex-col">

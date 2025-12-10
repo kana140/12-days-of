@@ -1,6 +1,4 @@
 "use client";
-// import Link from "next/link";
-// import clsx from "clsx";
 import { useState } from "react";
 import GiftModal from "@/app/ui/gift-modal";
 import { Gift, FullGift } from "../lib/definitions";
@@ -8,15 +6,15 @@ import { ToastContainer, toast } from "react-toastify";
 
 type GiftCardProps = {
   gift: Gift;
+  currentDay: boolean;
 };
 
-export default function GiftBox({ gift }: GiftCardProps) {
+export default function GiftBox({ gift, currentDay }: GiftCardProps) {
   const [selectedGift, setSelectedGift] = useState<FullGift | null>(
     isFullGift(gift) ? gift : null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  //   const notify = () => toast("yippii")
   function isFullGift(gift: Gift): gift is FullGift {
     return "name" in gift && "description" in gift;
   }
@@ -46,6 +44,7 @@ export default function GiftBox({ gift }: GiftCardProps) {
       }
 
       const fullGift: FullGift = await res.json();
+
       setSelectedGift(fullGift);
       setIsModalOpen(true);
     } finally {
@@ -64,7 +63,11 @@ export default function GiftBox({ gift }: GiftCardProps) {
         onClick={handleSelectGift}
         disabled={loading || gift.disabled}
       >
-        <img className="size-24" src="/present1.png" alt="present"></img>
+        <img
+          className={`size-24 ${currentDay ? "animate-bounce" : ""}`}
+          src="/present1.png"
+          alt="present"
+        ></img>
       </button>
       <ToastContainer />
 

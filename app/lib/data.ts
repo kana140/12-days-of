@@ -19,9 +19,7 @@ export async function getCalendarById(calendarId: string) {
       allGiftsPromise,
     ]);
 
-    const numberOfGifts = Number(data[0][0].count ?? "0");
     const calendar = data[1][0];
-
     const giftData = data[2];
     const todaysDate = new Date();
     const calendarStartDate = new Date(calendar.start_date);
@@ -40,23 +38,26 @@ export async function getCalendarById(calendarId: string) {
         disabled: unlockDate > todaysDate,
       };
     });
-
-    if (calendar.start_date <= todaysDate) {
+    let currentDay = 0;
+    if (calendarStartDate <= todaysDate) {
       console.log("calendar started");
-      calendarMessage = `Day ${Math.abs(dateDiff)}`;
+      currentDay = Math.abs(dateDiff) + 1;
+      calendarMessage = `Day ${currentDay}`;
     } else if (todaysDate >= calendar.start_date + calendar.number_of_days) {
       console.log(`calendar finished!`);
       calendarMessage = "Calendar finished";
     } else if (todaysDate < calendar.start_date) {
+      console.log(calendar.start_date);
+      console.log(todaysDate);
       console.log(`calendar starts in ${dateDiff} days`);
       calendarMessage = `Calendar starts in ${dateDiff} days`;
     }
 
     return {
-      numberOfGifts,
       calendar,
       gifts,
       calendarMessage,
+      currentDay,
     };
   } catch (error) {
     console.error("Database Error:", error);
@@ -64,13 +65,11 @@ export async function getCalendarById(calendarId: string) {
   }
 }
 
-export async function getGiftsForCalendar() {}
-
 export async function getGiftForDay(calendarId: string, day: number) {
   try {
     const calendarRows = await sql<
       Calendar[]
-    >`SELECT start_date FROM calendars WHERE calendar_id = ${calendarId}`;
+    >`SELECT start_date FROM calendars WHERE id = ${calendarId}`;
 
     const startDate = calendarRows[0].start_date;
 
@@ -83,20 +82,18 @@ export async function getGiftForDay(calendarId: string, day: number) {
       throw new Error("Nice try");
     }
     const giftRows = await sql<FullGift[]>`
-    SELECT 1 FROM gifts where dashboard_id=${calendarId} AND day=${day} LIMIT 1;`;
+    SELECT * FROM gifts where calendar_id=${calendarId} AND day=${day} LIMIT 1;`;
 
     const gift: FullGift = giftRows[0];
-
+    console.log("gift", gift);
     try {
-      await sql`UPDATE gifts SET opened = 1 where id = ${gift.id}`;
+      await sql`UPDATE gifts SET opened = true where id = ${gift.id}`;
     } catch (error) {
       console.error(error);
       throw new Error("Failed to set the gift to opened");
     }
 
-    return {
-      gift,
-    };
+    return gift;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch gift data.");
@@ -153,10 +150,7 @@ export async function getCalendarForOwner(id: string) {
       return { calendar: null, gifts: [] as FullGift[] };
     }
 
-    console.log(calendarRows);
     const calendarId = calendarRows[0].id;
-
-    // now get gifts
 
     const giftsRows = await sql<
       FullGift[]

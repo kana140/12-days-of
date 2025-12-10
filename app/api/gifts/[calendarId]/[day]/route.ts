@@ -17,7 +17,6 @@ export async function GET(
     return NextResponse.json({ error: "Calendar not found" }, { status: 404 });
   }
 
-  // assume calendar.start_date is a Date
   const start = new Date(calendar.start_date);
   const today = new Date();
   start.setHours(0, 0, 0, 0);

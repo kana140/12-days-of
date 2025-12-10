@@ -5,14 +5,6 @@ import giftopening from "@/public/present-sprite-opening.png";
 // import useSound from "use-sound";
 // import pop from "@/public/sounds/pop.mp3";
 
-// type Gift = {
-//   id: number;
-//   title: string;
-//   text: string;
-//   link?: string;
-//   image?: string;
-// };
-
 export default function GiftModal({
   isOpen,
   onClose,
@@ -23,7 +15,6 @@ export default function GiftModal({
   gift: FullGift | null;
 }) {
   const [phase, setPhase] = useState<"animating" | "revealed">("animating");
-
   useEffect(() => {
     if (isOpen) {
       setPhase("animating");
@@ -54,7 +45,6 @@ export default function GiftModal({
 
         {phase === "animating" && (
           <div className="flex flex-col items-center justify-center py-10">
-            {/* Gift box animation placeholder – drop your sprite here */}
             <SpriteAnimator
               sprite={giftopening.src}
               width={515}
@@ -76,7 +66,7 @@ export default function GiftModal({
         )}
 
         {phase === "revealed" && (
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center">
             <h2 className="text-lg font-semibold">{gift.name}</h2>
             <p className="text-sm text-gray-700 whitespace-pre-line">
               {gift.description}
@@ -84,7 +74,6 @@ export default function GiftModal({
 
             {gift.image && (
               <div className="overflow-hidden rounded-xl border">
-                {/* If using next/image, swap <img> */}
                 <img
                   src={gift.image}
                   alt={gift.name}
