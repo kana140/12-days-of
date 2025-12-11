@@ -35,7 +35,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           <Button>Edit Calendar</Button>
         </Link>
       </div>
-      <CopyLink />
+      <CopyLink id={calendar.id} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-export default function CopyLink() {
+export default function CopyLink({ id }: { id: string }) {
   const handlerCopyLink = async () => {
     try {
-      const link = window.location.href;
+      const link = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/calendar/${id}`;
       await navigator.clipboard.writeText(link);
     } catch (err) {
       console.error("Failed to copy link:", err);
@@ -13,9 +13,8 @@ export default function CopyLink() {
   return (
     <h1
       onClick={handlerCopyLink}
-      className="absolute cursor-pointer hover:to-blue-950"
+      className="absolute cursor-pointer hover:to-blue-950 hover:underline"
     >
-      {" "}
       Copy Link
     </h1>
   );
