@@ -49,7 +49,9 @@ export async function getCalendarById(calendarId: string) {
     } else if (todaysDate < calendar.start_date) {
       console.log(calendar.start_date);
       console.log(todaysDate);
-      console.log(`calendar starts in ${dateDiff} days`);
+      console.log(
+        `calendar starts in ${dateDiff} ${dateDiff === 1 ? "day" : "days"}`
+      );
       calendarMessage = `Calendar starts in ${dateDiff} days`;
     }
 
