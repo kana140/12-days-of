@@ -284,7 +284,7 @@ async function uploadGiftImage(calendarId: string, day: number, file: File) {
   const { url } = await put(
     `calendar/${calendarId}/day-${day}-${file.name}`,
     buffer,
-    { access: "public" }
+    { access: "public", allowOverwrite: true }
   );
 
   return url;
