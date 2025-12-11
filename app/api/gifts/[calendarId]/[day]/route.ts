@@ -3,7 +3,9 @@ import { getGiftForDay, getCalendarById } from "@/app/lib/data";
 
 export async function GET(
   req: Request,
-  context: { params: Promise<{ calendarId: string; day: string }> }
+  context: {
+    params: Promise<{ calendarId: string; day: string }>;
+  }
 ) {
   const { calendarId, day } = await context.params;
   const dayNum = Number(day);
@@ -11,8 +13,10 @@ export async function GET(
   if (Number.isNaN(dayNum)) {
     return NextResponse.json({ error: "Invalid day" }, { status: 400 });
   }
-
-  const { calendar } = await getCalendarById(calendarId);
+  const url = new URL(req.url);
+  const offsetStr = url.searchParams.get("offset");
+  const offsetMinutes = offsetStr ? Number(offsetStr) : 0;
+  const { calendar } = await getCalendarById(calendarId, offsetMinutes);
   if (!calendar) {
     return NextResponse.json({ error: "Calendar not found" }, { status: 404 });
   }
