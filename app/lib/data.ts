@@ -85,9 +85,8 @@ export async function getGiftForDay(calendarId: string, day: number) {
     SELECT * FROM gifts where calendar_id=${calendarId} AND day=${day} LIMIT 1;`;
 
     const gift: FullGift = giftRows[0];
-    console.log("gift", gift);
     try {
-      await sql`UPDATE gifts SET opened = true where id = ${gift.id}`;
+      await sql`UPDATE gifts SET opened = TRUE where id = ${gift.id}`;
     } catch (error) {
       console.error(error);
       throw new Error("Failed to set the gift to opened");

@@ -64,7 +64,9 @@ export default function GiftBox({ gift, currentDay }: GiftCardProps) {
         disabled={loading || gift.disabled}
       >
         <img
-          className={`size-24 ${currentDay ? "animate-bounce" : ""}`}
+          className={`size-24 ${
+            currentDay && !gift.opened ? "animate-bounce" : ""
+          }`}
           src="/present1.png"
           alt="present"
         ></img>
