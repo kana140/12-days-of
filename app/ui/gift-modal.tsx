@@ -26,7 +26,7 @@ export default function GiftModal({
   }, [isOpen]);
 
   if (!isOpen || !gift) return null;
-
+  console.log(gift.link);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
@@ -82,15 +82,19 @@ export default function GiftModal({
               </div>
             )}
 
-            {gift.link && (
-              <a
-                href={gift.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-medium text-pink-600 underline"
-              >
-                Open your surprise 🎁
-              </a>
+            {gift.link != "" ? (
+              gift.link && (
+                <a
+                  href={gift.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-sm font-medium text-pink-600 underline"
+                >
+                  Open your surprise 🎁
+                </a>
+              )
+            ) : (
+              <div></div>
             )}
           </div>
         )}

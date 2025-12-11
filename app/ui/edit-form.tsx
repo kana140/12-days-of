@@ -95,7 +95,7 @@ export default function Form({
         </div>
 
         {/* Set Gifts */}
-        <div className="mb-4">
+        <div className="mb-4 relative overflow-x-scrolls">
           <label
             htmlFor="Gifts"
             className="mb-2 block text-sm font-medium text-gray-900"

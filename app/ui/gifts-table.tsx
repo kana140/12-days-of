@@ -39,16 +39,26 @@ export default function GiftsTable({ gifts }: { gifts: GiftField[] }) {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <table className="bg-blue-50 w-full h-10 w-50%">
-        <thead>
+    <div className="flex flex-col items-center relative shadow-xs">
+      <table className="bg-blue-50 text-sm w-full text-left rtl:text-right text-body">
+        <thead className="text-sm border-b ">
           <tr>
-            <th>Day</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Link</th>
-            <th>Image</th>
-            <th></th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Day
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Title
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Description
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Link
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Image
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium"></th>
           </tr>
         </thead>
         <tbody>
@@ -97,7 +107,6 @@ export default function GiftsTable({ gifts }: { gifts: GiftField[] }) {
                     name={`gifts[${day}][link]`}
                     className="w-full"
                     defaultValue={row.link}
-                    required
                   />
                 </td>
 
