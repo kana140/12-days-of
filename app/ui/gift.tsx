@@ -15,7 +15,6 @@ export default function GiftBox({ gift, currentDay }: GiftCardProps) {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const offsetMinutes = new Date().getTimezoneOffset();
   function isFullGift(gift: Gift): gift is FullGift {
     return "name" in gift && "description" in gift;
   }
@@ -30,12 +29,9 @@ export default function GiftBox({ gift, currentDay }: GiftCardProps) {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/gifts/${gift.calendar_id}/${gift.day}?offset=${offsetMinutes}`,
-        {
-          method: "GET",
-        }
-      );
+      const res = await fetch(`/api/gifts/${gift.calendar_id}/${gift.day}`, {
+        method: "GET",
+      });
 
       if (res.status === 403) {
         toast(`You can only open this gift on day ${gift.day}`);
