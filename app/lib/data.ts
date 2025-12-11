@@ -5,10 +5,7 @@ import { getDateDiff } from "./util";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-export async function getCalendarById(
-  calendarId: string,
-  offsetMinutes: number
-) {
+export async function getCalendarById(calendarId: string) {
   try {
     const calendarDataPromise = sql`SELECT receiver_name, start_date, number_of_days FROM calendars WHERE id = ${calendarId}`;
     const giftCountPromise = sql`SELECT COUNT(*) FROM gifts WHERE calendar_id = ${calendarId}`;
@@ -24,8 +21,7 @@ export async function getCalendarById(
 
     const calendar = data[1][0];
     const giftData = data[2];
-    const utcNow = new Date();
-    const todaysDate = new Date(utcNow.getTime() - offsetMinutes * 60_000);
+    const todaysDate = new Date();
     const calendarStartDate = new Date(calendar.start_date);
     let calendarMessage = "";
 
@@ -43,7 +39,6 @@ export async function getCalendarById(
       };
     });
     let currentDay = 0;
-    console.log(dateDiff);
     if (calendarStartDate <= todaysDate) {
       console.log("calendar started");
       currentDay = Math.abs(dateDiff) + 1;
@@ -51,8 +46,8 @@ export async function getCalendarById(
     } else if (todaysDate >= calendar.start_date + calendar.number_of_days) {
       console.log(`calendar finished!`);
       calendarMessage = "Calendar finished";
-    } else if (todaysDate < calendarStartDate) {
-      console.log(calendarStartDate);
+    } else if (todaysDate < calendar.start_date) {
+      console.log(calendar.start_date);
       console.log(todaysDate);
       console.log(
         `calendar starts in ${dateDiff} ${dateDiff === 1 ? "day" : "days"}`

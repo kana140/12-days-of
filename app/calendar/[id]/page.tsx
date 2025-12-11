@@ -8,9 +8,8 @@ export const metadata: Metadata = { title: "Calendar" };
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  const offsetMinutes = new Date().getTimezoneOffset();
   const { calendar, gifts, calendarMessage, currentDay } =
-    await getCalendarById(id, offsetMinutes);
+    await getCalendarById(id);
 
   return (
     <div className="py-10 px-16">
