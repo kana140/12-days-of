@@ -6,6 +6,7 @@ import GiftBox from "@/app/ui/gift";
 import Link from "next/link";
 import CopyLink from "@/app/ui/copy-link";
 import { Button } from "@/app/ui/button";
+import { lusitana } from "@/app/ui/fonts";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -17,9 +18,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   const daysTillStart = getDateDiff(new Date(calendar.start_date)) + 1;
 
   return (
-    <div className="pt-10 px-16 text-center">
+    <div
+      className={`${lusitana.className} pt-10 px-16 text-center text-black dark:text-primary`}
+    >
       {daysTillStart > 0 ? (
-        <h1> Day {daysTillStart} </h1>
+        <h1 className="text-xl"> Day {daysTillStart} </h1>
       ) : (
         <h3 className="pb-10">Better finish it soon...</h3>
       )}
@@ -36,6 +39,10 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         </Link>
       </div>
       <CopyLink id={calendar.id} />
+      <Link href={`/calendar/${id}`} className="text-black dark:text-primary">
+        {" "}
+        Open Calendar
+      </Link>
     </div>
   );
 }

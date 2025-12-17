@@ -6,7 +6,7 @@ import { lusitana } from "./ui/fonts";
 export default function Home() {
   return (
     <div
-      className={`${lusitana.className} flex flex-col items-center m-auto gap-5`}
+      className={`${lusitana.className} flex flex-col items-center m-auto gap-5 dark:text-primary`}
     >
       <h2 className="text-2xl">Get Started</h2>
       <Link href="/login">

@@ -33,7 +33,7 @@ export default function GiftModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-2xl bg-white dark:bg-foreground p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -66,7 +66,7 @@ export default function GiftModal({
         )}
 
         {phase === "revealed" && (
-          <div className="space-y-4 flex flex-col items-center">
+          <div className="space-y-4 flex flex-col items-center dark:text-background">
             <h2 className="text-lg font-semibold">{gift.name}</h2>
             <p className="text-sm text-gray-700 whitespace-pre-line">
               {gift.description}

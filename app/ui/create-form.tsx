@@ -1,9 +1,10 @@
 "use client";
-import GiftsTable from "@/app/ui/gifts-table";
+import { GiftsTableV2 } from "@/app/ui/gifts-table";
 import { Button } from "@/app/ui/button";
 import { createCalendar, State } from "@/app/lib/actions";
 import { useActionState } from "react";
 import { lusitana } from "./fonts";
+import { Input } from "./input-fields";
 
 export default function Form() {
   const initialState: State = { message: null, errors: {} };
@@ -15,7 +16,9 @@ export default function Form() {
         className="rounded-md p-4 md:p-6"
         aria-describedby="all-fields-missing-error"
       >
-        <h1 className={`${lusitana.className} mb-3 text-2xl text-center`}>
+        <h1
+          className={`${lusitana.className} mb-3 text-2xl text-center text-gray-800`}
+        >
           Create Calendar
         </h1>
         {/* Receiver's Name */}
@@ -27,14 +30,13 @@ export default function Form() {
             What is the name of the person you would like to make this for?
           </label>
           <div className="relative">
-            <input
-              className="peer block w-50% rounded-md border border-gray-100 py-1 pl-5 text-sm outline-2 placeholder:text-gray-500"
+            <Input
               type="text"
               id="receivers-name"
               name="receiversName"
               placeholder="Enter name"
               required
-            ></input>
+            />
           </div>
         </div>
 
@@ -47,13 +49,13 @@ export default function Form() {
             Whats their email
           </label>
           <div className="relative">
-            <input
+            <Input
               type="text"
               id="receivers-email"
               name="receiversEmail"
               placeholder="Enter email"
-              className="peer block w-50% rounded-md border border-gray-100 py-1 pl-5 text-sm outline-2 placeholder:text-gray-500"
-            ></input>
+              required
+            />
           </div>
         </div>
 
@@ -66,12 +68,7 @@ export default function Form() {
             What day would you like to start?
           </label>
           <div className="relative border-gray-900">
-            <input
-              className="peer block w-50% rounded-md border border-gray-100 py-1 pl-5 text-sm outline-2 placeholder:text-gray-500"
-              type="date"
-              id="start-date"
-              name="startDate"
-            ></input>
+            <Input type="date" id="start-date" name="startDate" required />
           </div>
         </div>
 
@@ -83,7 +80,7 @@ export default function Form() {
           >
             Create a gift for each day
           </label>
-          <GiftsTable gifts={[]} />
+          <GiftsTableV2 gifts={[]} />
         </div>
         <div className="mt-6 flex justify-end gap-4">
           {/* <Link

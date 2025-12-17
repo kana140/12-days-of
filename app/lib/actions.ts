@@ -134,7 +134,6 @@ export async function createCalendar(preState: State, formData: FormData) {
       if (file && file.size > 0) {
         imageUrl = await uploadGiftImage(calendarId.toString(), gift.day, file);
       }
-
       await sql`
       INSERT INTO gifts (calendar_id, day, name, link, description, image)
       VALUES (${calendarId}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${imageUrl});
@@ -211,6 +210,8 @@ export async function updateCalendar(
       if (file && file.size > 0) {
         imageUrl = await uploadGiftImage(id, gift.day, file);
       }
+      console.log(gift);
+      console.log(imageUrl);
 
       await sql`
       INSERT INTO gifts (calendar_id, day, name, link, description, image)

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { GiftField } from "../lib/definitions";
+import { Input } from "./input-fields";
 
 type GiftRow = {
   id: string;
@@ -13,7 +14,129 @@ type GiftRow = {
   opened?: boolean;
 };
 
-export default function GiftsTable({ gifts }: { gifts: GiftField[] }) {
+export function GiftsTableV2({ gifts }: { gifts: GiftField[] }) {
+  const [rows, setRows] = useState<GiftRow[]>([{ id: crypto.randomUUID() }]);
+
+  useEffect(() => {
+    if (gifts?.length > 0) {
+      setRows(
+        gifts.map((gift, index) => ({
+          id: gift.id ?? crypto.randomUUID(),
+          name: gift.name ?? "",
+          description: gift.description ?? "",
+          link: gift.link ?? "",
+          image: gift.image ?? "",
+          day: gift.day ?? index + 1,
+        }))
+      );
+    }
+  }, [gifts]);
+
+  const addRow = () => {
+    setRows((prev) => [...prev, { id: crypto.randomUUID() }]);
+  };
+  const removeRow = (id: string) => {
+    setRows((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  return (
+    <div className="text-black">
+      {rows.map((row, index) => {
+        const day = index + 1;
+        return (
+          <details
+            className="collapse bg-base-100 border border-base-300"
+            name="my-accordion-det-1"
+            open
+            key={row.id}
+          >
+            {/* Day */}
+            <summary className="collapse-title font-semibold flex justify-between">
+              <p>Day {day}</p>
+              <input type="hidden" name={`gifts[${day}][day]`} value={day} />
+              <p> {row.name}</p>
+            </summary>
+            <div className="collapse-content text-sm">
+              {/* Title */}
+              Title
+              <Input
+                type="text"
+                name={`gifts[${day}][name]`}
+                className="w-full"
+                defaultValue={row.name}
+                required
+                placeholder="Enter Title"
+              />
+              Description
+              {/* Description */}
+              <Input
+                type="text"
+                name={`gifts[${day}][description]`}
+                className="w-full"
+                defaultValue={row.description}
+                required
+                placeholder="Enter Description"
+              />
+              Link
+              {/* Link */}
+              <Input
+                type="text"
+                name={`gifts[${day}][link]`}
+                className="w-full"
+                defaultValue={row.link}
+              />
+              Image
+              {/* Image */}
+              <div className="relative">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  id="image"
+                  name={`gifts[${day}][image]`}
+                />
+
+                {row.image && (
+                  <input
+                    type="hidden"
+                    name={`gifts[${day}][existingImageUrl]`}
+                    value={row.image}
+                  />
+                )}
+
+                {/* Remove Button */}
+                <button
+                  type="button"
+                  onClick={() => removeRow(row.id)}
+                  className="text-red-500 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </details>
+        );
+      })}
+      {rows.length === 0 && (
+        <div>No gifts yet - click &quot;Add gift&quot; to start ✨</div>
+      )}
+
+      {rows.length < 12 ? (
+        <button
+          className="border border-gray-500 rounded-md bg-blue-50 m-5 py-2 px-5 cursor-pointer hover:bg-blue-200"
+          onClick={() => {
+            addRow();
+          }}
+        >
+          Add Gift
+        </button>
+      ) : (
+        <></>
+      )}
+    </div>
+  );
+}
+
+export function GiftsTable({ gifts }: { gifts: GiftField[] }) {
   const [rows, setRows] = useState<GiftRow[]>([{ id: crypto.randomUUID() }]);
 
   useEffect(() => {

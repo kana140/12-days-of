@@ -13,7 +13,7 @@ export default function CopyLink({ id }: { id: string }) {
   return (
     <h1
       onClick={handlerCopyLink}
-      className="absolute cursor-pointer hover:to-blue-950 hover:underline"
+      className="absolute cursor-pointer text-black dark:text-primary hover:to-blue-950 hover:underline"
     >
       Copy Link
     </h1>

@@ -25,10 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
-        <div className="flex min-h-screen items-center justify-center bg-background font-sans dark:bg-black">
-          <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between bg-white dark:bg-black sm:items-start flex-wrap content-center">
+        <div className="flex min-h-screen items-center justify-center bg-background font-sans">
+          <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between bg-white dark:bg-background sm:items-start flex-wrap content-center">
             {children}
           </main>
         </div>

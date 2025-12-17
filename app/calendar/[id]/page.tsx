@@ -12,7 +12,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     await getCalendarById(id);
 
   return (
-    <div className="py-10 px-16">
+    <div className="py-10 px-16 text-black dark:text-primary">
       <div className="pb-5 m-auto text-center text-5xl">
         <h1 className={`${lusitana.className}`}>{calendarMessage}</h1>
       </div>

@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { Button } from "./button";
 import { lusitana } from "./fonts";
+import { Input } from "./input-fields";
 
 export function SignupForm() {
   const searchParams = useSearchParams();
@@ -11,8 +12,8 @@ export function SignupForm() {
   const [state, formAction, isPending] = useActionState(signup, undefined);
   return (
     <form action={formAction} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${lusitana.className} mb-3 text-2xl`}>
+      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8 dark:bg-foreground">
+        <h1 className={`${lusitana.className} mb-3 text-2xl dark:text-accent`}>
           Please sign up to continue.
         </h1>
         <div className="w-full">
@@ -24,12 +25,7 @@ export function SignupForm() {
               Name
             </label>
             <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="name"
-                name="name"
-                placeholder="Name"
-              />
+              <Input id="name" name="name" placeholder="Name" />
             </div>
           </div>
           {state?.errors?.name && <p>{state.errors.name}</p>}
@@ -41,13 +37,7 @@ export function SignupForm() {
               Email
             </label>
             <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Email"
-              />
+              <Input id="email" name="email" type="email" placeholder="Email" />
             </div>
           </div>
           {state?.errors?.email && <p>{state.errors.email}</p>}
@@ -59,8 +49,7 @@ export function SignupForm() {
               Password
             </label>
             <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+              <Input
                 id="password"
                 name="password"
                 placeholder="Enter password"
