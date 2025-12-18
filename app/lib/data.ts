@@ -155,7 +155,7 @@ export async function getCalendarForOwner(id: string) {
 
     const giftsRows = await sql<
       FullGift[]
-    >`SELECT * FROM gifts WHERE calendar_id = ${calendarId}`;
+    >`SELECT * FROM gifts WHERE calendar_id = ${calendarId} ORDER BY day`;
 
     const calendar: Calendar = calendarRows[0];
     console.log(calendar);
