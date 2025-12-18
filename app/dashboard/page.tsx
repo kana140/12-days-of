@@ -38,9 +38,9 @@ export default async function Page() {
                     </h2>
 
                     <h4>Start Date: {startDate}</h4>
-                    <EditCalendar id={calendar.id} />
                   </div>
                 </Link>
+                <EditCalendar id={calendar.id} />
               </div>
             );
           })}
