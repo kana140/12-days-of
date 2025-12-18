@@ -35,7 +35,7 @@ type GiftInput = {
   name: string;
   link: string;
   description: string;
-  image: File | null;
+  image: string;
   existingImageUrl?: string;
 };
 
@@ -64,7 +64,8 @@ function parseGifts(formData: FormData) {
     } else if (field === "description") {
       giftsByDay[dayKey].description = stringValue;
     } else if (field === "image") {
-      giftsByDay[dayKey].image = value instanceof File ? value : null;
+      giftsByDay[dayKey].image = stringValue;
+      console.log(stringValue);
     } else if (field === "existingImageUrl") {
       giftsByDay[dayKey].existingImageUrl = stringValue;
     }
@@ -129,14 +130,9 @@ export async function createCalendar(preState: State, formData: FormData) {
     const calendarId: number = calendarResult[0].id;
 
     for (const gift of gifts) {
-      const file = gift.image;
-      let imageUrl = "";
-      if (file && file.size > 0) {
-        imageUrl = await uploadGiftImage(calendarId.toString(), gift.day, file);
-      }
       await sql`
       INSERT INTO gifts (calendar_id, day, name, link, description, image)
-      VALUES (${calendarId}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${imageUrl});
+      VALUES (${calendarId}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${gift.image});
     `;
     }
   } catch (error) {
@@ -162,6 +158,7 @@ export async function updateCalendar(
   if (!session?.user) {
     throw new Error("Not logged in.");
   }
+  console.log(formData);
 
   const userEmail = session.user.email;
   console.log(session);
@@ -174,8 +171,6 @@ export async function updateCalendar(
   if (!user) {
     throw new Error("User not found in DB");
   }
-
-  //   const userId: number = user[0].id;
 
   const validatedFields = UpdateCalendar.safeParse({
     receiversName: formData.get("receiversName"),
@@ -202,20 +197,10 @@ export async function updateCalendar(
 
     await sql`DELETE FROM gifts WHERE calendar_id = ${id};`;
 
-    console.log("deleted rows");
-
     for (const gift of gifts) {
-      const file = gift.image;
-      let imageUrl = gift.existingImageUrl || "";
-      if (file && file.size > 0) {
-        imageUrl = await uploadGiftImage(id, gift.day, file);
-      }
-      console.log(gift);
-      console.log(imageUrl);
-
       await sql`
       INSERT INTO gifts (calendar_id, day, name, link, description, image)
-      VALUES (${id}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${imageUrl});
+      VALUES (${id}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${gift.image});
     `;
     }
   } catch (error) {
@@ -276,17 +261,4 @@ export async function signup(state: FormState, formData: FormData) {
 
   revalidatePath("/login");
   redirect("/login");
-}
-
-async function uploadGiftImage(calendarId: string, day: number, file: File) {
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
-
-  const { url } = await put(
-    `calendar/${calendarId}/day-${day}-${file.name}`,
-    buffer,
-    { access: "public", allowOverwrite: true }
-  );
-
-  return url;
 }
