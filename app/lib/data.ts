@@ -48,7 +48,6 @@ export async function getCalendarById(calendarId: string) {
       calendarMessage = "Calendar finished";
     } else if (todaysDate < calendar.start_date) {
       console.log(calendar.start_date);
-      console.log(todaysDate);
       console.log(
         `calendar starts in ${dateDiff} ${dateDiff === 1 ? "day" : "days"}`
       );
@@ -158,7 +157,6 @@ export async function getCalendarForOwner(id: string) {
     >`SELECT * FROM gifts WHERE calendar_id = ${calendarId} ORDER BY day`;
 
     const calendar: Calendar = calendarRows[0];
-    console.log(calendar);
 
     const gifts = giftsRows.map((gift) => ({
       ...gift,
@@ -167,7 +165,7 @@ export async function getCalendarForOwner(id: string) {
 
     return { calendar, gifts };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { calendar: null, gifts: [] as FullGift[] };
   }
 }

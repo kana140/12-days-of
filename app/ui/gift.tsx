@@ -20,8 +20,6 @@ export default function GiftBox({ gift, currentDay }: GiftCardProps) {
   }
 
   async function handleSelectGift() {
-    console.log("is fuill gift", selectedGift);
-    console.log(isFullGift(gift));
     if (selectedGift) {
       setIsModalOpen(true);
       return;

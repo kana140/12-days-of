@@ -98,11 +98,7 @@ export function GiftsTableV2({ gifts }: { gifts: GiftField[] }) {
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    const url = await uploadGiftImage(
-                      calendarId,
-                      row.day!,
-                      file
-                    );
+                    const url = await uploadGiftImage(calendarId, day, file);
 
                     setRows((prev) =>
                       prev.map((r) =>
@@ -116,13 +112,6 @@ export function GiftsTableV2({ gifts }: { gifts: GiftField[] }) {
                   name={`gifts[${day}][image]`}
                   value={row.image ?? ""}
                 />
-                {/* {row.image && (
-                  <input
-                    type="hidden"
-                    name={`gifts[${day}][existingImageUrl]`}
-                    value={row.image}
-                  />
-                )} */}
 
                 {/* Remove Button */}
                 <button

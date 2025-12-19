@@ -9,7 +9,6 @@ import { Input } from "./input-fields";
 export default function Form() {
   const initialState: State = { message: null, errors: {} };
   const [state, formAction] = useActionState(createCalendar, initialState);
-  console.log(state);
   return (
     <form action={formAction}>
       <div

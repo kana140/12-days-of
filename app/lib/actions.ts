@@ -8,7 +8,6 @@ import postgres from "postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { put } from "@vercel/blob";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -31,12 +30,12 @@ export type State = {
 };
 
 type GiftInput = {
+  id: string;
   day: number;
   name: string;
   link: string;
   description: string;
   image: string;
-  existingImageUrl?: string;
 };
 
 function parseGifts(formData: FormData) {
@@ -44,7 +43,7 @@ function parseGifts(formData: FormData) {
 
   for (const [key, value] of formData.entries()) {
     const match = key.match(
-      /^gifts\[(\d+)\]\[(day|name|link|description|image|existingImageUrl)\]$/
+      /^gifts\[(\d+)\]\[(id|day|name|link|description|image)\]$/
     );
     if (!match) continue;
 
@@ -55,7 +54,9 @@ function parseGifts(formData: FormData) {
       giftsByDay[dayKey] = {};
     }
 
-    if (field === "day") {
+    if (field === "id") {
+      giftsByDay[dayKey].id = stringValue;
+    } else if (field === "day") {
       giftsByDay[dayKey].day = Number(stringValue);
     } else if (field === "name") {
       giftsByDay[dayKey].name = stringValue;
@@ -65,20 +66,17 @@ function parseGifts(formData: FormData) {
       giftsByDay[dayKey].description = stringValue;
     } else if (field === "image") {
       giftsByDay[dayKey].image = stringValue;
-      console.log(stringValue);
-    } else if (field === "existingImageUrl") {
-      giftsByDay[dayKey].existingImageUrl = stringValue;
     }
   }
 
   return Object.entries(giftsByDay)
     .map(([dayKey, data]) => ({
+      id: data.id ?? crypto.randomUUID(),
       day: data.day ?? Number(dayKey),
       title: data.name ?? "",
       link: data.link ?? "",
       description: data.description ?? "",
       image: data.image ?? null,
-      existingImageUrl: data.existingImageUrl ?? "",
     }))
     .sort((a, b) => a.day - b.day);
 }
@@ -91,7 +89,6 @@ export async function createCalendar(preState: State, formData: FormData) {
   }
 
   const userEmail = session.user.email;
-  console.log(session);
   if (!userEmail) {
     throw new Error("Not authenticated");
   }
@@ -158,10 +155,9 @@ export async function updateCalendar(
   if (!session?.user) {
     throw new Error("Not logged in.");
   }
-  console.log(formData);
 
   const userEmail = session.user.email;
-  console.log(session);
+
   if (!userEmail) {
     throw new Error("Not authenticated");
   }
@@ -188,21 +184,47 @@ export async function updateCalendar(
   const { receiversName, receiversEmail, startDate } = validatedFields.data;
   const gifts = parseGifts(formData);
 
+  console.log(gifts);
   try {
-    await sql`
-    UPDATE calendars
-    SET receiver_name = ${receiversName}, receiver_email = ${receiversEmail}, start_date = ${startDate}, number_of_days = ${gifts.length}
-    WHERE id = ${id};
-    `;
+    await sql.begin(async (tx) => {
+      await tx`
+          UPDATE calendars
+          SET receiver_name = ${receiversName}, receiver_email = ${receiversEmail}, start_date = ${startDate}, number_of_days = ${gifts.length}
+          WHERE id = ${id};
+      `;
 
-    await sql`DELETE FROM gifts WHERE calendar_id = ${id};`;
+      await tx`
+    UPDATE gifts
+    SET day = day + 1000
+    WHERE calendar_id = ${id};
+  `;
 
-    for (const gift of gifts) {
-      await sql`
-      INSERT INTO gifts (calendar_id, day, name, link, description, image)
-      VALUES (${id}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${gift.image});
-    `;
-    }
+      for (const gift of gifts) {
+        await tx`
+        INSERT INTO gifts (id, calendar_id, day, name, link, description, image)
+        VALUES (${gift.id}, ${id}, ${gift.day}, ${gift.title}, ${gift.link}, ${gift.description}, ${gift.image})
+        ON CONFLICT (id) DO UPDATE
+        SET day = EXCLUDED.day,
+          name = EXCLUDED.name,
+          link = EXCLUDED.link,
+          description = EXCLUDED.description,
+          image = EXCLUDED.image
+          WHERE gifts.calendar_id = ${id};
+      `;
+      }
+
+      const submittedIds = gifts.map((g) => g.id);
+
+      if (submittedIds.length === 0) {
+        await tx`DELETE FROM gifts WHERE calendar_id = ${id};`;
+      } else {
+        await tx`
+          DELETE FROM gifts
+          WHERE calendar_id = ${id}
+          AND NOT (id = ANY(${tx.array(submittedIds)}::uuid[]));
+        `;
+      }
+    });
   } catch (error) {
     console.error(error);
     return {
