@@ -4,8 +4,10 @@
 :root {
   --background: #c9dbba;
   --foreground: white;
-  --primary: #efebce;
+  --primary: #c9dbba;
   --accent: #c9dbba;
+  --header: #121212;
+  --card: #d2dfed;
 }
 
 @theme inline {
@@ -14,6 +16,8 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
+  --color-header: var(--header);
+  --color-card: var(--card);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -24,6 +28,7 @@
     --foreground: #e0e0e0;
     --accent: #06402b;
     --primary: #e0e0e0;
+    --header: #06402b;
   }
 }
 
