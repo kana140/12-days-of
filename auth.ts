@@ -33,7 +33,7 @@ export async function signUp(email: string, name: string, password: string) {
   if (!user) await createUser(email, name, password);
 }
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
