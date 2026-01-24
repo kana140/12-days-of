@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Create Invoice" };
 
 export default async function Page() {
   return (
-    <main>
+    <div className="w-1/2">
       <Breadcrumbs
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard/" },
@@ -18,6 +18,6 @@ export default async function Page() {
         ]}
       />
       <Form />
-    </main>
+    </div>
   );
 }

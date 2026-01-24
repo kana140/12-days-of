@@ -1,5 +1,3 @@
-import { lusitana } from "./fonts";
-
 export default function Card() {
   return (
     // <div className="h-20 w-3/4 bg-primary m-2 shadow-sm rounded-sm">

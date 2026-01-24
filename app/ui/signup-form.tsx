@@ -3,7 +3,6 @@ import { signup } from "@/app/lib/actions";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { Button } from "./button";
-import { lusitana } from "./fonts";
 import { Input } from "./input-fields";
 
 export function SignupForm() {
@@ -13,7 +12,7 @@ export function SignupForm() {
   return (
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8 dark:bg-foreground">
-        <h1 className={`${lusitana.className} mb-3 text-2xl dark:text-accent`}>
+        <h1 className={`mb-3 text-2xl text-header`}>
           Please sign up to continue.
         </h1>
         <div className="w-full">
@@ -25,7 +24,12 @@ export function SignupForm() {
               Name
             </label>
             <div className="relative">
-              <Input id="name" name="name" placeholder="Name" />
+              <Input
+                id="name"
+                name="name"
+                placeholder="Name"
+                className="w-full"
+              />
             </div>
           </div>
           {state?.errors?.name && <p>{state.errors.name}</p>}
@@ -37,7 +41,13 @@ export function SignupForm() {
               Email
             </label>
             <div className="relative">
-              <Input id="email" name="email" type="email" placeholder="Email" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Email"
+                className="w-full"
+              />
             </div>
           </div>
           {state?.errors?.email && <p>{state.errors.email}</p>}
@@ -54,6 +64,7 @@ export function SignupForm() {
                 name="password"
                 placeholder="Enter password"
                 type="password"
+                className="w-full"
               />
             </div>
           </div>

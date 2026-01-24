@@ -4,9 +4,9 @@ import { GiftsTableV2 } from "@/app/ui/gifts-table";
 import { Button } from "@/app/ui/button";
 import { updateCalendar, State } from "@/app/lib/actions";
 import { useActionState } from "react";
-import { lusitana } from "./fonts";
 import { CalendarForm, GiftField } from "@/app/lib/definitions";
 import { Input } from "./input-fields";
+import { timezones } from "@/app/lib/definitions";
 
 export default function Form({
   calendar,
@@ -19,21 +19,42 @@ export default function Form({
   const updateCalendarWithId = updateCalendar.bind(null, calendar.id);
   const [state, formAction] = useActionState(
     updateCalendarWithId,
-    initialState
+    initialState,
   );
+  const timezoneKeys = Object.keys(timezones) as (keyof typeof timezones)[];
+
   return (
     <form action={formAction}>
       <div
         className="rounded-md p-4 md:p-6 bg-foreground"
         aria-describedby="all-fields-missing-error"
       >
-        <h1
-          className={`${lusitana.className} mb-3 text-2xl text-center text-gray-800`}
-        >
+        <h1 className={`mb-3 text-2xl text-center text-gray-800`}>
           Edit Calendar
         </h1>
+
+        {/* Name */}
+        <div className="mb-4 w-1/2">
+          <label
+            htmlFor="name"
+            className="mb-3 mt-5 block text-sm font-medium text-gray-900 "
+          >
+            Name this Calendar (example: )
+          </label>
+          <div className="relative">
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              defaultValue={calendar.name}
+              placeholder="Enter title"
+              required
+            />
+          </div>
+        </div>
+
         {/* Receiver's Name */}
-        <div className="mb-4">
+        <div className="mb-4 w-1/2">
           <label
             htmlFor="receivers-name"
             className="mb-3 mt-5 block text-sm font-medium text-gray-900 "
@@ -53,7 +74,7 @@ export default function Form({
         </div>
 
         {/* Receiver's Email */}
-        <div className="mb-4">
+        <div className="mb-4 w-1/2">
           <label
             htmlFor="receivers-email"
             className="mb-2 block text-sm font-medium text-gray-900"
@@ -73,7 +94,7 @@ export default function Form({
         </div>
 
         {/* Start Date */}
-        <div className="mb-4">
+        <div className="mb-4 w-1/2">
           <label
             htmlFor="start-date"
             className="mb-2 block text-sm font-medium text-gray-900"
@@ -91,6 +112,32 @@ export default function Form({
                   : ""
               }
             />
+          </div>
+        </div>
+
+        {/* Time Zone */}
+        <div className="mb-4">
+          <label
+            htmlFor="timezone"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Select a Time Zone (Please note this is to make sure that the gifts
+            become openable at midnight for the receiver. The default setting
+            will be UTC.)
+          </label>
+          <div className="relative border-gray-900 text-black">
+            <select
+              id="timezone"
+              name="timezone"
+              defaultValue={calendar.timezone}
+              required
+            >
+              {timezoneKeys.map((key, index) => (
+                <option key={index} className="p-2" value={timezones[key]}>
+                  {key}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

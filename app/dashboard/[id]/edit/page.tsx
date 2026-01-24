@@ -14,7 +14,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     notFound();
   }
   return (
-    <main>
+    <div className="w-1/2">
       <Breadcrumbs
         breadcrumbs={[
           { label: "Calendar", href: `/dashboard/${calendar.id}` },
@@ -26,6 +26,6 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         ]}
       />
       <Form calendar={calendar} gifts={gifts} />
-    </main>
+    </div>
   );
 }

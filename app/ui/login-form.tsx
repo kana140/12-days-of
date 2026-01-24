@@ -3,7 +3,6 @@
 import { Button } from "@/app/ui/button";
 import { useActionState } from "react";
 import { authenticate } from "../lib/actions";
-import { lusitana } from "./fonts";
 import { useSearchParams } from "next/navigation";
 import { Input } from "./input-fields";
 
@@ -12,12 +11,12 @@ export default function LoginForm() {
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
-    undefined
+    undefined,
   );
   return (
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8 dark:bg-foreground">
-        <h1 className={`${lusitana.className} mb-3 text-2xl  dark:text-accent`}>
+        <h1 className={`mb-3 text-2xl text-header`}>
           Please log in to continue.
         </h1>
         <div className="w-full">
@@ -35,6 +34,7 @@ export default function LoginForm() {
                 name="email"
                 placeholder="Enter your email address"
                 required
+                className="w-full"
               />
             </div>
           </div>
@@ -53,6 +53,7 @@ export default function LoginForm() {
                 placeholder="Enter password"
                 required
                 minLength={6}
+                className="w-full"
               />
             </div>
           </div>

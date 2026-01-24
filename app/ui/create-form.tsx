@@ -3,7 +3,6 @@ import { GiftsTableV2 } from "@/app/ui/gifts-table";
 import { Button } from "@/app/ui/button";
 import { createCalendar, State } from "@/app/lib/actions";
 import { useActionState } from "react";
-import { lusitana } from "./fonts";
 import { Input } from "./input-fields";
 
 export default function Form() {
@@ -15,9 +14,7 @@ export default function Form() {
         className="rounded-md p-4 md:p-6"
         aria-describedby="all-fields-missing-error"
       >
-        <h1
-          className={`${lusitana.className} mb-3 text-2xl text-center text-gray-800`}
-        >
+        <h1 className={`mb-3 text-2xl text-center text-gray-800`}>
           Create Calendar
         </h1>
         {/* Receiver's Name */}
