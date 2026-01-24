@@ -1,13 +1,12 @@
 // import Image from "next/image";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { lusitana } from "./ui/fonts";
 import ChristmasTree from "./ui/christmas-tree";
 
 export default function Home() {
   return (
     <div
-      className={`${lusitana.className} w-full flex flex-col items-center m-5 gap-5 text-grey-200 dark:text-primary`}
+      className={`w-full flex flex-col items-center m-5 gap-5 text-grey-200 dark:text-primary`}
     >
       <div>
         <ChristmasTree />
@@ -18,16 +17,22 @@ export default function Home() {
           <div className="hero w-1/3 bg-white rounded-3xl shadow-md">
             <div className="hero-content block text-center">
               <h1 className="text-2xl font-bold">Create a Calendar</h1>
+              blurbblurbblurbb blurbblurbblurbblurb
+              blurbblurbblurblurbblurbblurbblurb
             </div>
           </div>
           <div className="hero w-1/3 bg-white rounded-3xl shadow-md">
             <div className="hero-content block text-center">
               <h1 className="text-2xl font-bold">Gift Calendar</h1>
+              blurbblurbblurbb blurbblurbblurbblurb
+              blurbblurbblurblurbblurbblurbblurb
             </div>
           </div>
           <div className="hero w-1/3 bg-white rounded-3xl shadow-md">
             <div className="hero-content block text-center">
               <h1 className="text-2xl font-bold">Daily Unlocks</h1>
+              blurbblurbblurbb blurbblurbblurbblurb
+              blurbblurbblurblurbblurbblurbblurb
             </div>
           </div>
         </div>

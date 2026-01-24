@@ -1,7 +1,6 @@
 import ChristmasTree from "@/app/ui/christmas-tree";
 import GiftBox from "@/app/ui/gift";
 import { getCalendarById } from "@/app/lib/data";
-import { lusitana } from "@/app/ui/fonts";
 import { Metadata } from "next";
 export const metadata: Metadata = { title: "Calendar" };
 
@@ -14,7 +13,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   return (
     <div className="py-10 px-16 text-black dark:text-primary">
       <div className="pb-5 m-auto text-center text-5xl">
-        <h1 className={`${lusitana.className}`}>{calendarMessage}</h1>
+        <h1 className="">{calendarMessage}</h1>
       </div>
       <ChristmasTree />
       <div className="flex flex-wrap justify-center">

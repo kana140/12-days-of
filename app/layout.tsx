@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import NavBar from "./ui/nav-bar";
 import "./globals.css";
+import { pixelify } from "./ui/fonts";
 import { Nav } from "react-bootstrap";
 
 const geistSans = Geist({
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+        className={`${pixelify.className} ${pixelify.className} antialiased `}
       >
         <div className="min-h-screen  w-full items-center justify-center bg-background font-sans">
           <NavBar />

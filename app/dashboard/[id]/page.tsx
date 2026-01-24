@@ -6,7 +6,6 @@ import GiftBox from "@/app/ui/gift";
 import Link from "next/link";
 import CopyLink from "@/app/ui/copy-link";
 import { Button } from "@/app/ui/button";
-import { lusitana } from "@/app/ui/fonts";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -15,16 +14,31 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   if (!calendar) {
     notFound();
   }
-  const daysTillStart = getDateDiff(new Date(calendar.start_date)) + 1;
+  const startDate = new Date(calendar.start_date);
+  const todaysDate = new Date();
+  const calendarCompleteDate = new Date(startDate + calendar.number_of_days);
+
+  const daysTillStart = getDateDiff(todaysDate, startDate) + 1;
 
   return (
-    <div
-      className={`${lusitana.className} pt-10 px-16 text-center text-black dark:text-primary`}
-    >
-      {daysTillStart > 0 ? (
+    <div className={`pt-10 px-16 text-center text-black dark:text-primary`}>
+      {/* {daysTillStart > 0 ? (
         <h1 className="text-xl"> Day {daysTillStart} </h1>
       ) : (
-        <h3 className="pb-10">Better finish it soon...</h3>
+
+      )} */}
+      {todaysDate > calendarCompleteDate ? (
+        <h3 className="pb-10">
+          Calendar completed on{" "}
+          {calendarCompleteDate.toLocaleDateString(undefined, {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </h3>
+      ) : (
+        <h1 className="text-xl"> Day {daysTillStart} </h1>
       )}
 
       <ChristmasTree />

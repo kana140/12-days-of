@@ -1,5 +1,5 @@
 "use server";
-import { signIn, signUp } from "@/auth";
+import { signIn, signUp, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { SignupFormSchema, FormState } from "./definitions";
 import bcrypt from "bcrypt";
@@ -13,9 +13,11 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 const FormSchema = z.object({
   id: z.string(),
+  name: z.string(),
   receiversName: z.string(),
   receiversEmail: z.string(),
   startDate: z.string(),
+  timezone: z.string(),
 });
 
 const CreateCalendar = FormSchema.omit({ id: true });
@@ -43,7 +45,7 @@ function parseGifts(formData: FormData) {
 
   for (const [key, value] of formData.entries()) {
     const match = key.match(
-      /^gifts\[(\d+)\]\[(id|day|name|link|description|image)\]$/
+      /^gifts\[(\d+)\]\[(id|day|name|link|description|image)\]$/,
     );
     if (!match) continue;
 
@@ -148,7 +150,7 @@ const UpdateCalendar = FormSchema.omit({ id: true });
 export async function updateCalendar(
   id: string,
   prevState: State,
-  formData: FormData
+  formData: FormData,
 ) {
   const session = await auth();
 
@@ -169,9 +171,11 @@ export async function updateCalendar(
   }
 
   const validatedFields = UpdateCalendar.safeParse({
+    name: formData.get("name"),
     receiversName: formData.get("receiversName"),
     receiversEmail: formData.get("receiversEmail"),
     startDate: formData.get("startDate"),
+    timezone: formData.get("timezone"),
   });
 
   if (!validatedFields.success) {
@@ -181,15 +185,15 @@ export async function updateCalendar(
     };
   }
 
-  const { receiversName, receiversEmail, startDate } = validatedFields.data;
+  const { receiversName, receiversEmail, startDate, name, timezone } =
+    validatedFields.data;
   const gifts = parseGifts(formData);
 
-  console.log(gifts);
   try {
     await sql.begin(async (tx) => {
       await tx`
           UPDATE calendars
-          SET receiver_name = ${receiversName}, receiver_email = ${receiversEmail}, start_date = ${startDate}, number_of_days = ${gifts.length}
+          SET name = ${name}, receiver_name = ${receiversName}, receiver_email = ${receiversEmail}, start_date = ${startDate}, timezone = ${timezone}, number_of_days = ${gifts.length}
           WHERE id = ${id};
       `;
 
@@ -239,7 +243,7 @@ export async function updateCalendar(
 // Authentication and Sign up
 export async function authenticate(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     await signIn("credentials", formData);
@@ -254,6 +258,11 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export async function signout() {
+  await signOut({ redirect: true });
+  redirect("/");
 }
 
 export async function signup(state: FormState, formData: FormData) {
