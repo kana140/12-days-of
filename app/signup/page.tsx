@@ -11,6 +11,14 @@ export default function SignUpPage() {
         <Suspense>
           <SignupForm />
         </Suspense>
+        <div className="text-black text-center">
+          Already have an account?...
+          <a href="/signup">
+            <i>
+              <u>Sign In</u>
+            </i>
+          </a>
+        </div>
       </div>
     </main>
   );

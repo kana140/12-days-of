@@ -4,6 +4,7 @@ import NavBar from "./ui/nav-bar";
 import "./globals.css";
 import { pixelify } from "./ui/fonts";
 import { Nav } from "react-bootstrap";
+import Footer from "./ui/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,10 +31,11 @@ export default function RootLayout({
       <body
         className={`${pixelify.className} ${pixelify.className} antialiased `}
       >
-        <div className="min-h-screen  w-full items-center justify-center bg-background font-sans">
-          <NavBar />
+        <NavBar />
+        <div className="min-h-screen w-full items-center justify-center bg-background font-sans">
           <main className="flex min-h-screen flex-col items-center justify-between bg-white dark:bg-background sm:items-start flex-wrap content-center">
             {children}
+            <Footer />
           </main>
         </div>
       </body>

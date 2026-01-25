@@ -11,7 +11,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     await getCalendarById(id);
 
   return (
-    <div className="py-10 px-16 text-black dark:text-primary">
+    <div className="m-auto text-black dark:text-primary">
       <div className="pb-5 m-auto text-center text-5xl">
         <h1 className="">{calendarMessage}</h1>
       </div>

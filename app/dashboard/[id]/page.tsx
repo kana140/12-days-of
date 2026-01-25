@@ -21,7 +21,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   const daysTillStart = getDateDiff(todaysDate, startDate) + 1;
 
   return (
-    <div className={`pt-10 px-16 text-center text-black dark:text-primary`}>
+    <div className={`m-auto text-center text-black dark:text-primary`}>
       {/* {daysTillStart > 0 ? (
         <h1 className="text-xl"> Day {daysTillStart} </h1>
       ) : (

@@ -14,7 +14,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     notFound();
   }
   return (
-    <div className="w-1/2">
+    <div className="md:w-1/2 m-auto p-5">
       <Breadcrumbs
         breadcrumbs={[
           { label: "Calendar", href: `/dashboard/${calendar.id}` },

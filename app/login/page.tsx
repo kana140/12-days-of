@@ -11,6 +11,14 @@ export default function LoginPage() {
         <Suspense>
           <LoginForm />
         </Suspense>
+        <div className="text-black text-center">
+          Don't have an account yet?...
+          <a href="/signup">
+            <i>
+              <u>Sign Up</u>
+            </i>
+          </a>
+        </div>
       </div>
     </main>
   );
