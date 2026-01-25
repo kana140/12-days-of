@@ -31,7 +31,7 @@ export function GiftsTableV2({ gifts }: { gifts: GiftField[] }) {
           link: gift.link ?? "",
           image: gift.image ?? "",
           day: gift.day ?? index + 1,
-        }))
+        })),
       );
     }
   }, [gifts]);
@@ -54,72 +54,78 @@ export function GiftsTableV2({ gifts }: { gifts: GiftField[] }) {
             open
             key={row.id}
           >
-            {/* Day */}
             <summary className="collapse-title font-semibold flex justify-between">
               <p>Day {day}</p>
               <input type="hidden" name={`gifts[${day}][day]`} value={day} />
               <p> {row.name}</p>
             </summary>
             <div className="collapse-content text-sm">
-              {/* Title */}
-              Title
-              <Input
-                type="text"
-                name={`gifts[${day}][name]`}
-                className="w-full"
-                defaultValue={row.name}
-                required
-                placeholder="Enter Title"
-              />
-              Description
-              {/* Description */}
-              <Input
-                type="text"
-                name={`gifts[${day}][description]`}
-                className="w-full"
-                defaultValue={row.description}
-                required
-                placeholder="Enter Description"
-              />
-              Link
-              {/* Link */}
-              <Input
-                type="text"
-                name={`gifts[${day}][link]`}
-                className="w-full"
-                defaultValue={row.link}
-              />
-              Image
-              {/* Image */}
-              <div className="relative">
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend">Title</legend>
                 <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const url = await uploadGiftImage(calendarId, day, file);
-
-                    setRows((prev) =>
-                      prev.map((r) =>
-                        r.id === row.id ? { ...r, image: url } : r
-                      )
-                    );
-                  }}
+                  type="text"
+                  name={`gifts[${day}][name]`}
+                  className="w-1/2"
+                  defaultValue={row.name}
+                  required
+                  placeholder="Enter Title"
                 />
+              </fieldset>
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend">Description</legend>
+                <textarea
+                  name={`gifts[${day}][description]`}
+                  defaultValue={row.description}
+                  required
+                  className="textarea h-24 w-full"
+                  placeholder="Enter Descrption"
+                ></textarea>
+              </fieldset>
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend">Link</legend>
+                <Input
+                  type="text"
+                  name={`gifts[${day}][link]`}
+                  className="w-full"
+                  defaultValue={row.link}
+                />
+              </fieldset>
+
+              <div className="relative">
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend">
+                    Choose an image you'd like to display when this gift is
+                    shown
+                  </legend>
+                  <input
+                    type="file"
+                    className="file-input"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const url = await uploadGiftImage(calendarId, day, file);
+
+                      setRows((prev) =>
+                        prev.map((r) =>
+                          r.id === row.id ? { ...r, image: url } : r,
+                        ),
+                      );
+                    }}
+                  />
+                  <label className="label">Max size 2MB</label>
+                </fieldset>
                 <input
                   type="hidden"
                   name={`gifts[${day}][image]`}
                   value={row.image ?? ""}
                 />
 
-                {/* Remove Button */}
                 <button
                   type="button"
                   onClick={() => removeRow(row.id)}
                   className="text-red-500 text-xs"
                 >
-                  Remove
+                  Remove Gift
                 </button>
               </div>
             </div>
