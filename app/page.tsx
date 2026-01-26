@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import ChristmasTree from "./ui/christmas-tree";
 import calendarCreationImage from "../public/create-calendar.png";
+import openGiftImage from "../public/open-gift.png";
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
           <b>How It Works</b>
         </h2>
         <div className="flex flex-col md:flex-row gap-5">
-          <div className="hero w-full md:w-1/3 bg-white rounded-3xl shadow-md">
+          <div className="hero w-full md:w-1/3 bg-white shadow-md pixel-corners">
             <div className="hero-content block text-center">
               <h1 className="text-2xl font-bold">Create a Calendar</h1>
               <img
@@ -26,7 +27,7 @@ export default function Home() {
               ></img>
             </div>
           </div>
-          <div className="hero w-full md:w-1/3 bg-white rounded-3xl shadow-md">
+          <div className="hero w-full md:w-1/3 bg-white pixel-corners shadow-md">
             <div className="hero-content block text-center">
               <h1 className="text-2xl font-bold">Gift Calendar</h1>
               <img
@@ -35,11 +36,11 @@ export default function Home() {
               ></img>
             </div>
           </div>
-          <div className="hero w-full md:w-1/3 bg-white rounded-3xl shadow-md">
+          <div className="hero w-full md:w-1/3 bg-white pixel-corners shadow-md">
             <div className="hero-content block text-center">
               <h1 className="text-2xl font-bold">Daily Unlocks</h1>
               <img
-                src={calendarCreationImage.src}
+                src={openGiftImage.src}
                 alt="Image of the calendar creation form"
               ></img>
             </div>

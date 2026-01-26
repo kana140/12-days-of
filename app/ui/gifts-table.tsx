@@ -5,6 +5,7 @@ import { GiftField } from "../lib/definitions";
 import { Input } from "./input-fields";
 import { uploadGiftImage } from "../lib/util";
 import { useParams } from "next/navigation";
+import { Button } from "./button";
 
 type GiftRow = {
   id: string;
@@ -137,14 +138,14 @@ export function GiftsTableV2({ gifts }: { gifts: GiftField[] }) {
       )}
 
       {rows.length < 12 ? (
-        <button
-          className="border border-gray-500 rounded-md bg-blue-50 m-5 py-2 px-5 cursor-pointer hover:bg-blue-200"
+        <Button
+          className="rounded-md bg-blue-50 m-5 py-2 px-5 cursor-pointer hover:bg-blue-200"
           onClick={() => {
             addRow();
           }}
         >
           Add Gift
-        </button>
+        </Button>
       ) : (
         <></>
       )}

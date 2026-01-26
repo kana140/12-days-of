@@ -33,10 +33,10 @@ export default function RootLayout({
       >
         <NavBar />
         <div className="min-h-screen w-full items-center justify-center bg-background font-sans">
-          <main className="flex min-h-screen flex-col items-center justify-between bg-white dark:bg-background sm:items-start flex-wrap content-center">
+          <main className="flex min-h-screen py-2 flex-col items-center justify-between bg-white dark:bg-background sm:items-start flex-wrap content-center">
             {children}
-            <Footer />
           </main>
+          <Footer />
         </div>
       </body>
     </html>

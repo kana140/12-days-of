@@ -11,7 +11,7 @@ type GiftCardProps = {
 
 export default function GiftBox({ gift, currentDay }: GiftCardProps) {
   const [selectedGift, setSelectedGift] = useState<FullGift | null>(
-    isFullGift(gift) ? gift : null
+    isFullGift(gift) ? gift : null,
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -62,7 +62,7 @@ export default function GiftBox({ gift, currentDay }: GiftCardProps) {
         disabled={loading || gift.disabled}
       >
         <img
-          className={`size-24 ${
+          className={`size-24 hover:size-28 ${
             currentDay && !gift.opened ? "animate-bounce" : ""
           }`}
           src="/present1.png"

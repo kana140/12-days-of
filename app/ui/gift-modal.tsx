@@ -87,7 +87,7 @@ export default function GiftModal({
                   href={gift.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-sm font-medium text-pink-600 underline"
+                  className="inline-flex items-center text-sm font-medium text-link underline"
                 >
                   Open your surprise 🎁
                 </a>
