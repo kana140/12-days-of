@@ -2,6 +2,8 @@ import * as z from "zod";
 
 export type Calendar = {
   id: string;
+  name: string;
+  timezone: string;
   user_id: string;
   receiver_name: string;
   receiver_email: string;
@@ -56,9 +58,11 @@ export const Images = ["cookies", "picture"];
 
 export type CalendarForm = {
   id: string;
+  name: string;
   receiver_name: string;
   receiver_email: string;
   start_date: string;
+  timezone: string;
 };
 
 export type GiftField = {
@@ -88,3 +92,9 @@ export type FullGift = GiftSummary & {
 };
 
 export type Gift = GiftSummary | FullGift;
+
+export const timezones = {
+  "UTC (Default)": "UTC",
+  Melbourne: "Australia/Melbourne",
+  Auckland: "NZDT",
+};
