@@ -2,12 +2,13 @@ import postgres from "postgres";
 import { Calendar, FullGift, GiftSummary } from "./definitions";
 import { auth } from "@/auth";
 import { getDateDiff } from "./util";
+import { convertTimezone } from "./util";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 export async function getCalendarById(calendarId: string) {
   try {
-    const calendarDataPromise = sql`SELECT receiver_name, start_date, number_of_days FROM calendars WHERE id = ${calendarId}`;
+    const calendarDataPromise = sql`SELECT receiver_name, start_date, number_of_days, timezone FROM calendars WHERE id = ${calendarId}`;
     const giftCountPromise = sql`SELECT COUNT(*) FROM gifts WHERE calendar_id = ${calendarId}`;
     const allGiftsPromise = sql<
       GiftSummary[]
@@ -22,12 +23,13 @@ export async function getCalendarById(calendarId: string) {
     const calendar = data[1][0];
     const giftData = data[2];
     const todaysDate = new Date();
+    console.log("current time", convertTimezone(todaysDate, calendar.timezone));
     const calendarStartDate = new Date(calendar.start_date);
     let calendarMessage = "";
 
     todaysDate.setHours(0, 0, 0, 0);
     calendarStartDate.setHours(0, 0, 0, 0);
-    const dateDiff = getDateDiff(new Date(calendar.start_date));
+    const dateDiff = getDateDiff(todaysDate, new Date(calendar.start_date));
 
     const gifts: GiftSummary[] = giftData.map((gift) => {
       const day = gift.day;
