@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import NavBar from "./ui/nav-bar";
 import "./globals.css";
 import { pixelify } from "./ui/fonts";
-import { Nav } from "react-bootstrap";
 import Footer from "./ui/footer";
 
 const geistSans = Geist({
