@@ -1,8 +1,8 @@
 import { upload } from "@vercel/blob/client";
 
-export function getDateDiff(dateInput: Date) {
-  const start = new Date(dateInput);
-  const today = new Date();
+export function getDateDiff(firstDate: Date, secondDate: Date) {
+  const start = new Date(secondDate);
+  const today = new Date(firstDate);
 
   start.setHours(0, 0, 0, 0);
   today.setHours(0, 0, 0, 0);
@@ -27,4 +27,8 @@ export async function uploadGiftImage(
   });
 
   return blob.url;
+}
+
+export function convertTimezone(dateInput: Date, timezone: string) {
+  return new Date(dateInput).toLocaleString("en-US", { timeZone: timezone });
 }
