@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import NavBar from "./ui/nav-bar";
 import "./globals.css";
 import { pixelify } from "./ui/fonts";
 import Footer from "./ui/footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Calendar",
@@ -27,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${pixelify.className} ${pixelify.className} antialiased `}
-      >
+      <body className={`${pixelify.className} antialiased `}>
         <NavBar />
         <div className="min-h-screen w-full items-center justify-center bg-background font-sans">
           <main className="flex min-h-screen py-2 flex-col items-center justify-between bg-white dark:bg-background sm:items-start flex-wrap content-center">
