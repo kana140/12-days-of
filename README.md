@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Little Calendars
 
-## Getting Started
+I made this project because I liked the idea of gettig my partner an advent calendar. But because of long distance, physical gifts did not seem feasible. So I decided to make an online alternative that would allow him to unlock a small surprise each day leading up to Christmas. And then I thought, what if I could help my other friends create and gift their own calendars too? That led to building a configurable experience where users can create and share their own personalised calendars for partners or friends.
 
-First, run the development server:
+# Features:
+* Create a fully custom, shareable calendar
+* Configure key calendar settings:
+  * Custom start date
+  * Number of days
+  * Gift/message for each day
+* Daily content that can only be unlocked on certain days
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Link to live demo: https://merry-poopey.dev/
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Tech Stack:
+Frontend: TypeScript, 
+Frameworks: React, Next.js,
+Styling: Tailwind CSS, DaisyUI
+Storage: PostgreSQL, Neon Blob Storage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# How to run the application:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Prerequisites: 
+* pnpm
 
-## Learn More
+Installation:
 
-To learn more about Next.js, take a look at the following resources:
+git clone https://github.com/kana140/12-days-of.git
+cd 12-days-till
+pnpm install 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run Locally:
+Navigate to the root directory and run: pnpm run dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The app should now be running on:
+http://localhost:3000
 
-## Deploy on Vercel
+# Future Improvements:
+* Implement different timezones
+* Implement more UIs for different themes/events (e.g. Valentines, Birthdays, etc..)
+* Mobile-first optimisations
+* Enhanced UI improvements and animations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
